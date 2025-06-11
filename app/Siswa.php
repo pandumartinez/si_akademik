@@ -65,6 +65,11 @@ class Siswa extends Model
         return $this->hasManyThrough('App\RapotUas', 'App\KelasSiswa');
     }
 
+    public function absen()
+    {
+        return $this->hasMany('App\AbsenSiswa');
+    }
+
     public function absenHariIni()
     {
         return $this->hasMany('App\AbsenSiswa')

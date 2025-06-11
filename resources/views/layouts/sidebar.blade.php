@@ -1,3 +1,8 @@
+@php
+    $user = Auth::user();
+    $role = $user->role;
+@endphp
+
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <a class="brand-link">
         <img src="{{ asset('img/emblem.png') }}" alt="Logo SMA YP 17" class="brand-image img-circle elevation-3">
@@ -8,18 +13,18 @@
     <div class="sidebar">
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-widget="treeview" data-accordion="false">
-                @if (Auth::user()->role === 'admin')
+                @if ($role === 'admin')
                     <x-nav.group icon="fa-home" label="Dashboard" :patterns="['/', 'dashboard']">
 
                         <x-nav.item label="Home" route="home" pattern="/" />
 
                         <x-nav.item label="Dashboard" route="home.dashboard" pattern="dashboard" />
                     </x-nav.group>
-                @elseif (Auth::user()->role === 'guru')
+                @elseif ($role === 'guru')
                     <x-nav.item label="Home" route="home" pattern="/" />
                 @endif
 
-                @if (Auth::user()->role === 'admin')
+                @if ($role === 'admin')
                     <x-nav.group icon="fa-edit" label="Master Data" :patterns="['master-data/*']">
 
                         <x-nav.item label="Data Mapel" route="mapel.index" pattern="master-data/mapel*" />
@@ -36,7 +41,7 @@
                     </x-nav.group>
                 @endif
 
-                @if (Auth::user()->role === 'admin')
+                @if ($role === 'admin')
                     <x-nav.group icon="fa-recycle" label="View Trash" :patterns="['trash/*']">
 
                         <x-nav.item label="Trash Guru" route="guru.index.trash" pattern="trash/guru" />
@@ -48,26 +53,22 @@
                 @endif
 
                 {{--
-                @if (Auth::user()->role === 'admin')
-                <x-nav.item label="Absensi Guru" icon="fas fa-calendar-check" route="absensi-guru"
-                    pattern="absensi-guru" />
-
-                @elseif (Auth::user()->role === 'guru')
-                <x-nav.item label="Absen" icon="fas fa-calendar-check" route="absen.harian" pattern="absen" />
-                @endif
-
-                @if (Auth::user()->role === 'guru')
+                @if ($role === 'guru')
                 <x-nav.item label="Jadwal" icon="fas fa-calendar-alt" route="jadwal.guru" pattern="jadwal/guru" />
                 @endif
                 --}}
 
-                @if (Auth::user()->role === 'guru' && Auth::user()->guru->kelasWali)
+                @if ($role === 'admin')
+                    <x-nav.item label="Absensi Guru" icon="fas fa-calendar-check" route="absensi-guru"
+                        pattern="absensi-guru" />
+                @elseif ($role === 'guru')
+                    <x-nav.item label="Absen" icon="fas fa-calendar-check" route="absen-guru.create" pattern="absen-guru" />
+                @endif
+
+                @if ($role === 'admin' || ($role === 'guru' && $user->guru->kelasWali))
                     <x-nav.item label="Absen Siswa" icon="fas fa-clipboard" route="absen-siswa.index"
                         pattern="absen-siswa" />
                 @endif
-
-                <x-nav.item label="Absensi Guru" icon="fas fa-clipboard" route="absen-guru.index"
-                    pattern="absen-guru" />
 
                 <x-nav.group icon="fa-file-signature" label="Nilai & Rapot" :patterns="['nilai*', 'rapot*']">
                     <x-nav.item label="Nilai" route="nilai.index" pattern="nilai" />
@@ -76,7 +77,7 @@
 
                     <x-nav.item label="Rapot UAS" route="rapot-uas.index" pattern="rapot-uas" />
 
-                    @if (Auth::user()->role === 'admin')
+                    @if ($role === 'admin')
                         <x-nav.item label="Predikat" route="predikat.index" pattern="predikat" />
                     @endif
 
@@ -84,7 +85,9 @@
                         pattern="deskripsi-predikat" />
                 </x-nav.group>
 
-                @if (Auth::user()->role === 'admin')
+                @if ($role === 'admin')
+                    <x-nav.item label="Periode" icon="fas fa-clipboard" route="periode.index" pattern="periode" />
+
                     <x-nav.item label="Pengumuman" icon="fas fa-clipboard" route="pengumuman.index" pattern="pengumuman" />
                 @endif
             </ul>

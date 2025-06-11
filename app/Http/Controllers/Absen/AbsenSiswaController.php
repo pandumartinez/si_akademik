@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Absen;
 
 use App\AbsenSiswa;
+use App\Kelas;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
@@ -12,12 +13,38 @@ class AbsenSiswaController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $guru = $user->guru;
 
-        $kelas = $guru->kelasWali;
-        $siswa = $kelas->siswa;
+        if ($user->role === 'admin') {
+            $kelasList = Kelas::all();
 
-        return view('absen-siswa.index', compact('kelas', 'siswa'));
+            $tanggal = $request->tanggal ?? date('Y-m-d');
+
+            if (!$request->has('kelas')) {
+                return view('absen-siswa.index', compact('kelasList', 'tanggal'));
+            }
+
+            $kelas = Kelas::with([
+                'siswa',
+                'siswa.absenHariIni' => function ($query) use ($tanggal) {
+                    $query->whereDate('created_at', '=', $tanggal);
+                },
+            ])
+                ->firstWhere('nama_kelas', '=', $request->kelas);
+
+            $data = compact('kelasList', 'kelas', 'tanggal');
+        } else {
+            $kelas = $user->guru->kelasWali;
+
+            $data = compact('kelas');
+        }
+
+        $jumlah = $data['kelas']->siswa->countBy(
+            fn($siswa) => $siswa->absenHariIni ? $siswa->absenHariIni->keterangan : null
+        );
+
+        $data['jumlah'] = $jumlah;
+
+        return view('absen-siswa.index', $data);
     }
 
     public function store(Request $request)

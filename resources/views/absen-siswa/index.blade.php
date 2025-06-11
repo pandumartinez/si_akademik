@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('heading')
-    Absensi Kelas {{ $kelas->nama_kelas }}
+    @if (isset($kelas))
+        Absensi Kelas {{ $kelas->nama_kelas }}
+    @else
+        Absensi Kelas
+    @endif
     Hari {{ \Carbon\Carbon::now()->translatedFormat('l, j F') }}
 @endsection
 
@@ -24,17 +28,57 @@
 @endpush
 
 @section('content')
+    <form id="form-search" method="get" action="{{ route('absen-siswa.index') }}"></form>
+
     <div class="col-md-12">
         <div class="card">
-            <div class="card-header">
-                <div class="row">
+            @if (auth()->user()->role === 'admin')
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="kelas">Kelas</label>
+
+                                <select form="form-search" id="kelas" name="kelas" class="select2 form-control"
+                                    onchange="event.target.form.submit()">
+                                    <option selected disabled>-- Pilih Kelas --</option>
+                                    @foreach ($kelasList as $_kelas)
+                                        <option value="{{ $_kelas->nama_kelas }}" @if (isset($kelas) && $_kelas->id === $kelas->id)
+                                        selected @endif>
+                                            {{ $_kelas->nama_kelas }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="tanggal">Tanggal</label>
+
+                                <input form="form-search" id="tanggal" type="date" name="tanggal"
+                                    class="form-control"
+                                    onchange="event.target.form.submit()"
+                                    placeholder="Tanggal kehadiran"
+                                    value="{{ $tanggal }}">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <div class="card-body">
                 <div class="row">
-                    @if (isset($kelas, $siswa))
+                    @if (!isset($kelas))
                         <div class="col-md-12">
+                            <p class="mb-0 text-center text-muted">
+                                Pilih kelas terlebih dahulu
+                            </p>
+                        </div>
+                    @endif
+
+                    @if (isset($kelas))
+                        <div class="col-md-12 border-bottom">
                             <dl class="row">
                                 <dt class="col-sm-3">Nama Kelas</dt>
                                 <dd class="col-sm-3">{{ $kelas->nama_kelas }}</dd>
@@ -48,7 +92,20 @@
                                 <dd class="col-sm-3">{{ $kelas->waliKelas->nama_guru }}</dd>
 
                                 <dt class="col-sm-3">Jumlah Siswa</dt>
-                                <dd class="col-sm-3">{{ $kelas->siswa_count }}</dd>
+                                <dd class="col-sm-3">{{ $kelas->siswa->count() }}</dd>
+                            </dl>
+                        </div>
+
+                        <div class="col-md-12 mt-3">
+                            <dl class="row">
+                                <dt class="col-sm-3">Jumlah Izin</dt>
+                                <dd id="jumlah-izin" class="col-sm-1">{{ $jumlah['izin'] ?? 0 }}</dd>
+
+                                <dt class="col-sm-3">Jumlah Sakit</dt>
+                                <dd id="jumlah-sakit" class="col-sm-1">{{ $jumlah['sakit'] ?? 0 }}</dd>
+
+                                <dt class="col-sm-3">Jumlah Tanpa Keterangan</dt>
+                                <dd id="jumlah-tanpa-keterangan" class="col-sm-1">{{ $jumlah['tanpa keterangan'] ?? 0 }}</dd>
                             </dl>
                         </div>
 
@@ -68,6 +125,9 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($kelas->siswa as $siswa)
+                                        @php
+                                            $kehadiran = $siswa->absenHariIni ? $siswa->absenHariIni->keterangan : null;
+                                        @endphp
                                         <tr>
                                             <form id="{{ $loop->iteration }}-form-absen">
                                                 <input type="hidden" name="siswa_id" value="{{ $siswa->id }}">
@@ -80,19 +140,22 @@
                                             <td class="absen">
                                                 <input form="{{ $loop->iteration }}-form-absen" type="checkbox"
                                                     class="absen" name="keterangan" value="izin"
-                                                    @if ($siswa->absenHariIni && $siswa->absenHariIni->keterangan === 'izin') checked @endif>
+                                                    @if (auth()->user()->role === 'admin') disabled @endif
+                                                    @if ($kehadiran === 'izin') checked @endif>
                                             </td>
 
                                             <td class="absen">
                                                 <input form="{{ $loop->iteration }}-form-absen" type="checkbox"
                                                     class="absen" name="keterangan" value="sakit"
-                                                    @if ($siswa->absenHariIni && $siswa->absenHariIni->keterangan === 'sakit') checked @endif>
+                                                    @if (auth()->user()->role === 'admin') disabled @endif
+                                                    @if ($kehadiran === 'sakit') checked @endif>
                                             </td>
 
                                             <td class="absen">
                                                 <input form="{{ $loop->iteration }}-form-absen" type="checkbox"
                                                     class="absen" name="keterangan" value="tanpa keterangan"
-                                                    @if ($siswa->absenHariIni && $siswa->absenHariIni->keterangan === 'tanpa keterangan') checked @endif>
+                                                    @if (auth()->user()->role === 'admin') disabled @endif
+                                                    @if ($kehadiran === 'tanpa keterangan') checked @endif>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -121,30 +184,29 @@
                         siswa_id: input.form.elements.siswa_id.value,
                         keterangan: input.value,
                     },
-                    success: function() {
+                    success: function () {
                         input.parentElement.classList.remove('error');
                         toastr.success('Absen berhasil disimpan.');
+
+                        var jumlahEl = $(`#jumlah-${input.value.replace(' ', '-')}`);
+                        jumlahEl.text(Number.parseInt(jumlahEl.text()) + 1);
                     },
-                    error: function() {
+                    error: function () {
                         input.parentElement.classList.add('error');
                         toastr.error('Absen tidak dapat disimpan.');
                     },
                 });
             }
 
-            $('input.absen').on('change', function(event) {
-                saveAbsen(event.target);
+            $('input.absen').on('change', function (event) {
+                var checkbox = event.target;
 
-                var formId = event.target.form.id;
+                saveAbsen(checkbox);
 
-                $(`input.absen[value="izin"][form="${formId}"`)
-                    .attr('disabled', event.target.checked && event.target.value !== 'izin');
-
-                $(`input.absen[value="sakit"][form="${formId}"`)
-                    .attr('disabled', event.target.checked && event.target.value !== 'sakit');
-
-                $(`input.absen[value="tanpa keterangan"][form="${formId}"`)
-                    .attr('disabled', event.target.checked && event.target.value !== 'tanpa keterangan');
+                $(`input.absen[form="${checkbox.form.id}"][value!="${checkbox.value}"]:checked`)
+                    .each(() => {
+                        this.checked = false;
+                    });
             });
         </script>
     @endsection

@@ -49,27 +49,31 @@ Route::middleware('auth')->group(function () {
     Route::resource('deskripsi-predikat', 'Rapot\DeskripsiPredikatController')
         ->only(['index', 'store']);
 
+    Route::resource('absen-siswa', 'Absen\AbsenSiswaController')
+        ->only(['index', 'store']);
+
     // Admin routes
     Route::middleware('admin')->group(function () {
         // Dashboard
         Route::get('dashboard', 'HomeController@dashboard')
             ->name('home.dashboard');
 
+        // Periode
+        Route::resource('periode','PeriodeController')
+            ->only(['index','store']);
+
         // Pengumuman
         Route::resource('pengumuman', 'PengumumanController')
             ->only(['index', 'store']);
 
-        Route::get('absensi-guru', function () {})
+        Route::get('absensi-guru', 'Absen\AbsenGuruController@index')
             ->name('absensi-guru');
     });
 
     // Guru routes
     Route::middleware('guru')->group(function () {
-        Route::resource('absen-siswa', 'Absen\AbsenSiswaController')
-            ->only(['index', 'store']);
-
-        Route::get('/absen-guru', 'Absen\AbsenGuruController@index')
-            ->name('absen-guru.index');
+        Route::resource('absen-guru', 'Absen\AbsenGuruController')
+            ->only(['create', 'store']);
     });
 });
 

@@ -25,6 +25,11 @@ class Guru extends Model
         });
     }
 
+    public function getAbsenHariIniAttribute()
+    {
+        return $this->absenHariIni()->first();
+    }
+
     public function user()
     {
         return $this->hasOne('App\User', 'nip', 'nip');
@@ -55,5 +60,16 @@ class Guru extends Model
     public function deskripsi()
     {
         return $this->hasOne('App\Deskripsi');
+    }
+
+    public function absen()
+    {
+        return $this->hasMany('App\AbsenGuru');
+    }
+
+    public function absenHariIni()
+    {
+        return $this->hasMany('App\AbsenGuru')
+            ->whereDate('created_at', '=', date('Y-m-d'));
     }
 }

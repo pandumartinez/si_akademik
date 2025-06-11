@@ -13,6 +13,8 @@ class CreatePeriodeTable extends Migration
 
             $table->year('tahun');
             $table->enum('semester', ['ganjil', 'genap']);
+            $table->date('tanggal_mulai');
+            $table->date('tanggal_akhir');
 
             $table->boolean('aktif');
         });

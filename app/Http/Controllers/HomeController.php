@@ -20,13 +20,13 @@ class HomeController extends Controller
         $user = $request->user();
 
         $jadwals = $user->role === 'admin'
-            ? Jadwal::query()
+            ? Jadwal::query()->with(['guru', 'guru.absen'])
             : $user->guru->jadwal();
 
         $hari = date('w');
 
         $jadwals = $jadwals
-            ->with(['kelas', 'mapel', 'guru'])
+            ->with(['kelas', 'mapel'])
             // ->with([
             //     'guru.absen' => function (HasMany $query) {
             //         $query->whereDate('created_at', date('Y-m-d'));
@@ -38,7 +38,7 @@ class HomeController extends Controller
 
         $pengumuman = Pengaturan::getValue('pengumuman');
 
-        return view('home.home', compact('jadwals', 'pengumuman'));
+        return view('home.home', compact('user', 'jadwals', 'pengumuman'));
     }
 
     public function dashboard()
