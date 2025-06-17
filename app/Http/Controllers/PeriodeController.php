@@ -3,30 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Pengaturan;
+use App\Periode;
 use Illuminate\Http\Request;
 
 class PeriodeController extends Controller
 {
     public function index()
     {
-        $pengumuman = Pengaturan::getValue('pengumuman');
+        $periode = Periode::aktif();
 
-        return view('pengumuman.index', compact('pengumuman'));
+        return view('periode.index', compact('periode'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'isi' => 'string',
+            'semester' => 'required|in:ganjil,genap',
+            'tanggal_awal' => 'required|date',
+            'tanggal_akhir' => 'required|date|after:tanggal_awal'
         ]);
 
-        Pengaturan::updateOrCreate(
-            ['key' => 'pengumuman'],
-            ['value' => $request->isi],
-        );
+        $tahun = substr($request->tanggal_awal, 0, 4);
 
-        return redirect()->route('home')
-            ->with('success', 'Pengumuman berhasil diperbarui!');
+        Periode::aktif()->update([
+            'aktif' => false,
+        ]);
+
+        Periode::create([
+            'tahun' => $tahun,
+            'semester' => $request->semester,
+            'tanggal_awal' => $request->tanggal_awal,
+            'tanggal_akhir' => $request->tanggal_akhir,
+            'aktif' => true,
+        ]);
+
+        return redirect()->route('periode.index')
+            ->with('success', 'Periode berhasil ditambahkan dan diaktifkan!');
     }
 }

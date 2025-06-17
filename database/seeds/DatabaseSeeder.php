@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
         Periode::create([
             'tahun' => '2024',
             'semester' => 'genap',
+            'tanggal_awal' => '2024-01-01',
+            'tanggal_akhir' => '2024-06-30',
             'aktif' => true,
         ]);
 

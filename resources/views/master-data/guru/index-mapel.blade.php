@@ -10,12 +10,21 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary btn-sm"
-                    data-toggle="modal"
-                    data-target="#tambah-guru">
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah-guru">
                     <i class="nav-icon fas fa-folder-plus"></i>
                     &nbsp;
                     Tambah Data Guru
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#import-excel">
+                    <i class="nav-icon fas fa-file-import"></i>
+                    &nbsp;
+                    Import Excel
+                </button>
+                <button type="button" class="btn btn-default btn-sm"
+                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
+                    <i class="nav-icon fas fa-file-export"></i>
+                    &nbsp;
+                    Export Excel
                 </button>
             </div>
 
@@ -34,7 +43,13 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $mapel->nama_mapel }}</td>
-                                <td>{{ $mapel->kelompok }}</td>
+                                @if ($mapel->kelompok == "A")
+                                    <td>{{ $mapel->kelompok }} (Wajib/Umum)</td>
+                                @elseif ($mapel->kelompok == "B")
+                                    <td>{{ $mapel->kelompok }} (Peminatan)</td>
+                                @else
+                                    <td>{{ $mapel->kelompok }} (Lintas Minat)</td>
+                                @endif
                                 <td>
                                     <a href="{{ route('guru.index', ['mapel' => Crypt::encrypt($mapel->id)]) }}"
                                         class="btn btn-info btn-sm">
@@ -73,15 +88,13 @@
 
                                     <input id="nama_guru" type="text" name="nama_guru"
                                         class="form-control @error('nama_guru') is-invalid @enderror"
-                                        placeholder="Nama lengkap guru"
-                                        required>
+                                        placeholder="Nama lengkap guru" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="jk">Jenis Kelamin</label>
 
-                                    <select id="jk" name="jk"
-                                        class="select2 form-control @error('jk') is-invalid @enderror"
+                                    <select id="jk" name="jk" class="select2 form-control @error('jk') is-invalid @enderror"
                                         required>
                                         <option value="">-- Pilih jenis kelamin --</option>
                                         <option value="L">Laki-Laki</option>
@@ -117,8 +130,7 @@
 
                                     <input id="nip" type="number" name="nip"
                                         class="form-control @error('nip') is-invalid @enderror"
-                                        placeholder="Nomor Induk Pegawai"
-                                        required>
+                                        placeholder="Nomor Induk Pegawai" required>
                                 </div>
 
                                 <div class="form-group">

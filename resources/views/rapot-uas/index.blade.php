@@ -2,9 +2,9 @@
 
 @section('heading')
     @if (isset($kelas, $mapel))
-        Nilai Rapot {{ $mapel->nama_mapel }} {{ $kelas->nama_kelas }}
+        Nilai Rapot UAS {{ $mapel->nama_mapel }} {{ $kelas->nama_kelas }}
     @else
-        Nilai Rapot
+        Nilai Rapot UAS
     @endif
 @endsection
 
@@ -63,6 +63,13 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
+
+                <button type="button" class="btn btn-default btn-sm"
+                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
+                    <i class="nav-icon fas fa-file-export"></i>
+                    &nbsp;
+                    Export Excel
+                </button>
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">

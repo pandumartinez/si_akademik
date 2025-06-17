@@ -70,7 +70,7 @@
                         pattern="absen-siswa" />
                 @endif
 
-                <x-nav.group icon="fa-file-signature" label="Nilai & Rapot" :patterns="['nilai*', 'rapot*']">
+                <x-nav.group icon="fa-file-signature" label="Nilai & Rapot" :patterns="['nilai*', 'rapot*', 'predikat*', 'deskripsi-predikat*']">
                     <x-nav.item label="Nilai" route="nilai.index" pattern="nilai" />
 
                     <x-nav.item label="Rapot UTS" route="rapot-uts.index" pattern="rapot-uts" />

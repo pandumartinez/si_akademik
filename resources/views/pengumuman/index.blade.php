@@ -3,6 +3,7 @@
 @section('heading', 'Pengumuman')
 
 @section('breadcrumbs')
+    <li class="breadcrumb-item">Pengaturan</li>
     <li class="breadcrumb-item active">Pengumuman</li>
 @endsection
 

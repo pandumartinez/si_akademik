@@ -10,38 +10,30 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary btn-sm"
-                    data-toggle="modal"
-                    data-target="#tambah-jadwal">
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah-jadwal">
                     <i class="nav-icon fas fa-folder-plus"></i>
                     &nbsp;
                     Tambah Data Jadwal
                 </button>
 
-                <button type="button" class="btn btn-default btn-sm"
-                    data-toggle="modal"
-                    data-target="#import-excel"
-                    disabled>
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#import-excel">
                     <i class="nav-icon fas fa-file-import"></i>
                     &nbsp;
                     Import Excel
                 </button>
 
                 <button type="button" class="btn btn-default btn-sm"
-                    onclick="window.location='{{ route('jadwal.export-excel') }}'"
-                    disabled>
+                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
                     <i class="nav-icon fas fa-file-export"></i>
                     &nbsp;
                     Export Excel
                 </button>
 
-                <button type="button" class="btn btn-danger btn-sm"
-                    data-toggle="modal"
-                    data-target="#drop-table">
+                <!-- <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#drop-table">
                     <i class="nav-icon fas fa-minus-circle"></i>
                     &nbsp;
                     Drop
-                </button>
+                </button> -->
             </div>
 
             <div class="card-body">
@@ -94,8 +86,7 @@
                                     <label for="kelas_id">Kelas</label>
 
                                     <select id="kelas_id" name="kelas_id"
-                                        class="select2 form-control @error('kelas_id') is-invalid @enderror"
-                                        required>
+                                        class="select2 form-control @error('kelas_id') is-invalid @enderror" required>
                                         <option value="">-- Pilih Kelas --</option>
                                         @foreach ($kelas as $_kelas)
                                             <option value="{{ $_kelas->id }}">{{ $_kelas->nama_kelas }}</option>
@@ -107,16 +98,14 @@
                                     <label for="jam_mulai">Jam Mulai</label>
 
                                     <input id="jam_mulai" type='time' name='jam_mulai'
-                                        class="form-control @error('jam_mulai') is-invalid @enderror"
-                                        required>
+                                        class="form-control @error('jam_mulai') is-invalid @enderror" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="mapel_id">Mata Pelajaran</label>
 
                                     <select id="mapel_id" name="mapel_id"
-                                        class="select2 form-control @error('mapel_id') is-invalid @enderror"
-                                        required>
+                                        class="select2 form-control @error('mapel_id') is-invalid @enderror" required>
                                         <option value="">-- Pilih Mapel --</option>
                                         @foreach ($mapels as $mapel)
                                             <option value="{{ $mapel->id }}">
@@ -132,8 +121,7 @@
                                     <label for="hari">Hari</label>
 
                                     <select id="hari" name="hari"
-                                        class="select2 form-control @error('hari') is-invalid @enderror"
-                                        required>
+                                        class="select2 form-control @error('hari') is-invalid @enderror" required>
                                         <option value="">-- Pilih Hari --</option>
                                         <option value="1">Senin</option>
                                         <option value="2">Selasa</option>
@@ -147,16 +135,14 @@
                                     <label for="jam_selesai">Jam Selesai</label>
 
                                     <input id="jam_selesai" type='time' name='jam_selesai'
-                                        class="form-control @error('jam_selesai') is-invalid @enderror"
-                                        required>
+                                        class="form-control @error('jam_selesai') is-invalid @enderror" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="guru_id">Nama Guru</label>
 
                                     <select id="guru_id" name="guru_id"
-                                        class="select2 form-control @error('guru_id') is-invalid @enderror"
-                                        required>
+                                        class="select2 form-control @error('guru_id') is-invalid @enderror" required>
                                         <option value="">-- Pilih Guru --</option>
                                         @foreach ($gurus as $guru)
                                             <option value="{{ $guru->id }}">{{ $guru->nama_guru }}</option>
@@ -223,8 +209,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary"
-                            data-dismiss="modal">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
                             Close
                         </button>
 
@@ -257,8 +242,7 @@
                         Drop
                     </button>
 
-                    <form id="jadwal-destroy"
-                        method="post" action="{{ route('jadwal.destroy', '') }}">
+                    <form id="jadwal-destroy" method="post" action="{{ route('jadwal.destroy', '') }}">
                         @csrf
                         @method('delete')
                     </form>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\MasterData;
 use App\Guru;
 use App\Http\Controllers\Controller;
 use App\Kelas;
+use App\Periode;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 

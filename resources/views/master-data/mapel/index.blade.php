@@ -34,7 +34,13 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $mapel->nama_mapel }}</td>
-                                <td>{{ $mapel->kelompok }}</td>
+                                @if ($mapel->kelompok == "A")
+                                    <td>{{ $mapel->kelompok }} (Wajib/Umum)</td>
+                                @elseif ($mapel->kelompok == "B")
+                                    <td>{{ $mapel->kelompok }} (Peminatan)</td>
+                                @else
+                                    <td>{{ $mapel->kelompok }} (Lintas Minat)</td>
+                                @endif
                                 <td>
                                     <a href="{{ route('mapel.edit', Crypt::encrypt($mapel->id)) }}"
                                         class="btn btn-success btn-sm">

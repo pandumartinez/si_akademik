@@ -10,12 +10,21 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary btn-sm"
-                    data-toggle="modal"
-                    data-target="#tambah-siswa">
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah-siswa">
                     <i class="nav-icon fas fa-folder-plus"></i>
                     &nbsp;
                     Tambah Data Siswa
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#import-excel">
+                    <i class="nav-icon fas fa-file-import"></i>
+                    &nbsp;
+                    Import Excel
+                </button>
+                <button type="button" class="btn btn-default btn-sm"
+                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
+                    <i class="nav-icon fas fa-file-export"></i>
+                    &nbsp;
+                    Export Excel
                 </button>
             </div>
 
@@ -73,8 +82,7 @@
 
                                     <input id="nis" type="number" name="nis"
                                         class="form-control @error('nis') is-invalid @enderror"
-                                        placeholder="Nomor induk siswa"
-                                        required>
+                                        placeholder="Nomor induk siswa" required>
                                 </div>
 
                                 <div class="form-group">
@@ -82,15 +90,13 @@
 
                                     <input id="nama_siswa" type="text" name="nama_siswa"
                                         class="form-control @error('nama_siswa') is-invalid @enderror"
-                                        placeholder="Nama lengkap siswa"
-                                        required>
+                                        placeholder="Nama lengkap siswa" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="jk">Jenis Kelamin</label>
 
-                                    <select id="jk" name="jk"
-                                        class="select2 form-control @error('jk') is-invalid @enderror"
+                                    <select id="jk" name="jk" class="select2 form-control @error('jk') is-invalid @enderror"
                                         required>
                                         <option value="">-- Pilih Jenis Kelamin --</option>
                                         <option value="L">Laki-Laki</option>
@@ -133,8 +139,7 @@
                                     <label for="kelas_id">Kelas</label>
 
                                     <select id="kelas_id" name="kelas_id"
-                                        class="select2 form-control @error('kelas_id') is-invalid @enderror"
-                                        required>
+                                        class="select2 form-control @error('kelas_id') is-invalid @enderror" required>
                                         <option value="">-- Pilih Kelas --</option>
                                         @foreach ($kelas as $_kelas)
                                             <option value="{{ $_kelas->id }}">{{ $_kelas->nama_kelas }}</option>

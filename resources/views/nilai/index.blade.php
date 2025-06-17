@@ -53,6 +53,18 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
+                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#import-excel">
+                    <i class="nav-icon fas fa-file-import"></i>
+                    &nbsp;
+                    Import Excel
+                </button>
+
+                <button type="button" class="btn btn-default btn-sm"
+                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
+                    <i class="nav-icon fas fa-file-export"></i>
+                    &nbsp;
+                    Export Excel
+                </button>
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
