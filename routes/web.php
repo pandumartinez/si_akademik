@@ -96,12 +96,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         Route::get('export', 'MasterData\GuruMasterDataController@export')
             ->name('guru.export');
-
-        Route::post('import', 'MasterData\SiswaMasterDataController@import')
-            ->name('siswa.import');
-
-        Route::get('export', 'MasterData\SiswaMasterDataController@export')
-            ->name('siswa.export');
     });
 
     Route::resource('master-data/guru', 'MasterData\GuruMasterDataController')
@@ -114,6 +108,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         Route::patch('{siswa}/foto', 'MasterData\SiswaMasterDataController@updateFoto')
             ->name('siswa.update.foto');
+        
+        Route::post('import', 'MasterData\SiswaMasterDataController@import')
+            ->name('siswa.import');
+
+        Route::get('export', 'MasterData\SiswaMasterDataController@export')
+            ->name('siswa.export');
     });
 
     Route::resource('master-data/siswa', 'MasterData\SiswaMasterDataController')
