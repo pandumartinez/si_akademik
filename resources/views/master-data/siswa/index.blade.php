@@ -47,8 +47,7 @@
                                                 &nbsp;
                                                 Ubah Foto
                                             </a>'>
-                                        <img src="{{ asset($siswa->foto) }}" class="img-fluid mb-2"
-                                            style="height: 12rem;">
+                                        <img src="{{ asset($siswa->foto) }}" class="img-fluid mb-2">
                                     </a>
                                 </td>
                                 <td>

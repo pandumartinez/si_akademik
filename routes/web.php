@@ -90,6 +90,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         Route::patch('{guru}/foto', 'MasterData\GuruMasterDataController@updateFoto')
             ->name('guru.update.foto');
+
+        Route::post('import', 'MasterData\GuruMasterDataController@import')
+            ->name('guru.import');
+
+        Route::get('export', 'MasterData\GuruMasterDataController@export')
+            ->name('guru.export');
     });
 
     Route::resource('master-data/guru', 'MasterData\GuruMasterDataController')

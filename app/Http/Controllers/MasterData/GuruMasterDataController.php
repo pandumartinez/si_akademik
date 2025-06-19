@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\MasterData;
 
+use App\Exports\GuruExport;
 use App\Guru;
 use App\Http\Controllers\Controller;
+use App\Imports\GuruImport;
 use App\Mapel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GuruMasterDataController extends Controller
 {
@@ -133,5 +136,30 @@ class GuruMasterDataController extends Controller
 
         return redirect()->back()
             ->with('success', 'Data guru berhasil dihapus!');
+    }
+
+    private const IMPORT_MIME_TYPES = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/csv',
+    ];
+
+    public function import(Request $request)
+    {
+        $mimeTypes = join(',', GuruMasterDataController::IMPORT_MIME_TYPES);
+
+        $request->validate([
+            'file' => "required|file|mimetypes:$mimeTypes"
+        ]);
+
+        Excel::import(new GuruImport, $request->file('file'));
+
+        return redirect()->back()
+            ->with('success', 'Data guru berhasil di-import!');
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new GuruExport, 'data-guru.xlsx');
     }
 }

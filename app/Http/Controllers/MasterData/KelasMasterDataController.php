@@ -13,13 +13,13 @@ class KelasMasterDataController extends Controller
 {
     public function index()
     {
+        $periode = Periode::aktif();
+
         $kelas = Kelas::with('waliKelas')->get();
 
         $gurus = Guru::with('kelasWali')->get();
 
-        // $periodes = Periode::with('');
-
-        return view('master-data.kelas.index', compact('kelas', 'gurus'));
+        return view('master-data.kelas.index', compact('periode', 'kelas', 'gurus'));
     }
 
     public function store(Request $request)

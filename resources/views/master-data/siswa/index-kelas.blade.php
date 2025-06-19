@@ -148,7 +148,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="telp">Nomor Telpon/HP</label>
+                                    <label for="telp">Nomor Telepon/HP</label>
 
                                     <input id="telp" type="tel" name="telp"
                                         class="form-control @error('telp') is-invalid @enderror"

@@ -85,7 +85,7 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('plugins/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bs-custom-file-input/1.3.4/bs-custom-file-input.min.js"></script>
     <script>
         $(document).ready(function () {
             bsCustomFileInput.init()

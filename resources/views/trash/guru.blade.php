@@ -35,8 +35,7 @@
                                         data-toggle="lightbox"
                                         data-title="Foto {{ $guru->nama_guru }}"
                                         data-gallery="gallery">
-                                        <img src="{{ asset($guru->foto) }}" class="img-fluid mb-2"
-                                            style="height: 12rem;">
+                                        <img src="{{ asset($guru->foto) }}" class="img-fluid mb-2">
                                     </a>
                                 </td>
                                 <td>
