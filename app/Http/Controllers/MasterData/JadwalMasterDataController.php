@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Jadwal;
 use App\Kelas;
 use App\Mapel;
+use App\Periode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Maatwebsite\Excel\Facades\Excel;
@@ -21,8 +22,9 @@ class JadwalMasterDataController extends Controller
             $kelas = Kelas::all();
             $gurus = Guru::all();
             $mapels = Mapel::all();
+            $periode = Periode::aktif();
 
-            return view('master-data.jadwal.index-kelas', compact('kelas', 'gurus', 'mapels'));
+            return view('master-data.jadwal.index-kelas', compact('kelas', 'gurus', 'mapels', 'periode'));
         }
 
         $kelas = Kelas::with('jadwal')

@@ -37,7 +37,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $_kelas->nama_kelas }}</td>
                                 <td>{{ $_kelas->waliKelas ? $_kelas->waliKelas->nama_guru : '-' }}</td>
-                                <td></td>
+                                <td>{{ $periode->tahun_ajaran }}</td>
                                 <td>
                                     <a href="{{ route('siswa.index', ['kelas' => Crypt::encrypt($_kelas->id)]) }}"
                                         class="btn btn-info btn-sm">

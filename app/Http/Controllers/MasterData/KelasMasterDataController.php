@@ -17,9 +17,9 @@ class KelasMasterDataController extends Controller
 
         $gurus = Guru::with('kelasWali')->get();
 
-        // $periodes = Periode::with('');
+        $periode = Periode::aktif();
 
-        return view('master-data.kelas.index', compact('kelas', 'gurus'));
+        return view('master-data.kelas.index', compact('kelas', 'gurus', 'periode'));
     }
 
     public function store(Request $request)

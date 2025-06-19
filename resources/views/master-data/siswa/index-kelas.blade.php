@@ -15,17 +15,18 @@
                     &nbsp;
                     Tambah Data Siswa
                 </button>
+
                 <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#import-excel">
                     <i class="nav-icon fas fa-file-import"></i>
                     &nbsp;
                     Import Excel
                 </button>
-                <button type="button" class="btn btn-default btn-sm"
-                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
+
+                <a href="{{ route('siswa.export') }}" class="btn btn-default btn-sm">
                     <i class="nav-icon fas fa-file-export"></i>
                     &nbsp;
                     Export Excel
-                </button>
+                </a>
             </div>
 
             <div class="card-body">
@@ -43,7 +44,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $_kelas->nama_kelas }}</td>
-                                <td></td>
+                                <td>{{ $periode->tahun_ajaran }}</td>
                                 <td>
                                     <a href="{{ route('siswa.index', ['kelas' => Crypt::encrypt($_kelas->id)]) }}"
                                         class="btn btn-info btn-sm">
@@ -176,6 +177,78 @@
                             <i class="nav-icon fas fa-save"></i>
                             &nbsp;
                             Tambahkan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="import-excel" class="modal modal-primary fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Import Excel</h5>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form method="post" action="{{ route('siswa.import') }}" enctype="multipart/form-data">
+                    @csrf
+
+                    <div class="modal-body">
+                        <h5>Petunjuk Import</h5>
+
+                        <p>Gunakan format berikut pada file Excel yang diunggah atau gunakan <a target="_blank" href="{{ asset('templates/template-import-data-siswa.xlsx') }}">template ini</a>.</p>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>NIS</th>
+                                    <th>NISN</th>
+                                    <th>Nama Siswa</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Nomor Telepon/HP</th>
+                                    <th>Tempat Lahir</th>
+                                    <th>Tanggal Lahir</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>string</td>
+                                    <td>string</td>
+                                    <td>string</td>
+                                    <td>enum: L, P</td>
+                                    <td>string. max 15</td>
+                                    <td>string. max 50</td>
+                                    <td>date</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="form-group">
+                            <label for="file">File Data</label>
+
+                            <div class="custom-file">
+                                <input id="file" type="file" name="file"
+                                    class="custom-file-input @error('file') is-invalid @enderror"
+                                    accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+                                    required>
+
+                                <label for="file" class="custom-file-label">Pilih file Excel atau CSV (.xls, .xlsx, .csv)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                            Close
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            Import
                         </button>
                     </div>
                 </form>

@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\MasterData;
 
+use App\Exports\SiswaExport;
 use App\Http\Controllers\Controller;
+use App\Imports\SiswaImport;
 use App\Kelas;
 use App\KelasSiswa;
+use App\Periode;
 use App\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaMasterDataController extends Controller
 {
@@ -15,8 +19,9 @@ class SiswaMasterDataController extends Controller
     {
         if (!$request->has('kelas')) {
             $kelas = Kelas::all();
+            $periode = Periode::aktif();
 
-            return view('master-data.siswa.index-kelas', compact('kelas'));
+            return view('master-data.siswa.index-kelas', compact('kelas', 'periode'));
         }
 
         $kelas = Kelas::with('siswa')
@@ -143,5 +148,30 @@ class SiswaMasterDataController extends Controller
 
         return redirect()->back()
             ->with('success', 'Data siswa berhasil dihapus!');
+    }
+
+    private const IMPORT_MIME_TYPES = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/csv',
+    ];
+
+    public function import(Request $request)
+    {
+        $mimeTypes = join(',', SiswaMasterDataController::IMPORT_MIME_TYPES);
+
+        $request->validate([
+            'file' => "required|file|mimetypes:$mimeTypes"
+        ]);
+
+        Excel::import(new SiswaImport, $request->file('file'));
+
+        return redirect()->back()
+            ->with('success', 'Data siswa berhasil di-import!');
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new SiswaExport, 'data-siswa.xlsx');
     }
 }

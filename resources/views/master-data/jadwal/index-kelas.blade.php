@@ -42,6 +42,7 @@
                         <tr>
                             <th>No.</th>
                             <th>Nama Kelas</th>
+                            <th>Tahun</th>
                             <th>Lihat Jadwal</th>
                         </tr>
                     </thead>
@@ -50,6 +51,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $_kelas->nama_kelas }}</td>
+                                <td>{{ $periode->tahun_ajaran }}</td>
                                 <td>
                                     <a href="{{ route('jadwal.index', ['kelas' => Crypt::encrypt($_kelas->id)]) }}"
                                         class="btn btn-info btn-sm">
