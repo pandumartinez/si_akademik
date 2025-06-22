@@ -7,6 +7,7 @@ use App\Kelas;
 use App\Mapel;
 use App\Pengaturan;
 use App\RapotUas;
+use App\Siswa;
 use Illuminate\Http\Request;
 
 class RapotUasController extends Controller
@@ -14,6 +15,7 @@ class RapotUasController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        $view = $request->view ?? ($user->role === 'admin' ? 'siswa' : 'kelas');
 
         $kelasList = $user->role === 'admin'
             ? Kelas::all()
@@ -27,34 +29,52 @@ class RapotUasController extends Controller
             where('nama_kelas', '=', $request->kelas)
             ->first();
 
-        $mapelList = $user->role === 'admin'
-            ? $kelas->mapel
-            : $kelas->mapelGuru($user->guru)->get();
+        if ($view === 'kelas') {
+            $mapelList = $user->role === 'admin'
+                ? $kelas->mapel
+                : $kelas->mapelGuru($user->guru)->get();
 
-        if (!$request->has('mapel')) {
-            return view('rapot-uas.index', compact('kelasList', 'mapelList', 'kelas'));
-        }
-
-        [$namaMapel, $kelompokMapel] = explode('_', $request->mapel);
-
-        $mapel = Mapel
-            ::where('nama_mapel', '=', $namaMapel)
-            ->where('kelompok', '=', $kelompokMapel)
-            ->first();
-
-        $kelas->load([
-            'siswa.rapotUas' => function ($query) use ($mapel) {
-                $query->where('rapot_uas.mapel_id', '=', $mapel->id);
+            if (!$request->has('mapel')) {
+                return view('rapot-uas.index', compact('kelasList', 'kelas', 'mapelList'));
             }
-        ]);
 
-        $guru = $user->role === 'admin'
-            ? $mapel->guru()->whereHas('jadwal', function ($query) use ($kelas) {
-                $query->where('jadwals.kelas_id', '=', $kelas->id);
-            })->first()
-            : $user->guru;
+            [$namaMapel, $kelompokMapel] = explode('_', $request->mapel);
 
-        return view('rapot-uas.index', compact('kelasList', 'mapelList', 'kelas', 'mapel', 'guru'));
+            $mapel = Mapel
+                ::where('nama_mapel', '=', $namaMapel)
+                ->where('kelompok', '=', $kelompokMapel)
+                ->first();
+
+            $kelas->load([
+                'siswa.nilai' => function ($query) use ($mapel) {
+                    $query->where('nilais.mapel_id', '=', $mapel->id);
+                }
+            ]);
+
+            $guru = $user->role === 'admin'
+                ? $mapel->guru()->whereHas('jadwal', function ($query) use ($kelas) {
+                    $query->where('jadwals.kelas_id', '=', $kelas->id);
+                })->first()
+                : $user->guru;
+
+            return view('rapot-uas.index', compact('kelasList', 'kelas', 'mapelList', 'mapel', 'guru'));
+        } else if ($view === 'siswa') {
+             if (!$request->has('siswa')) {
+                return view('rapot-uas.index', compact('kelasList', 'kelas'));
+            }
+
+            $namaSiswa = $request->siswa;
+
+            $siswa = Siswa::firstWhere('nama_siswa', '=', $namaSiswa);
+
+            $mapels = $kelas->mapel()->with([
+                'rapotUas' => function ($query) use ($siswa) {
+                    $query->where('kelas_siswa_id', '=', $siswa->kelas->pivot->id);
+                }
+            ])->get();
+
+            return view('rapot-uas.index', compact('kelasList', 'kelas', 'siswa', 'mapels'));
+        }
     }
 
     public function store(Request $request)

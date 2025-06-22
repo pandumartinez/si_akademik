@@ -47,7 +47,8 @@ class Siswa extends Model
 
     public function kelas()
     {
-        return $this->belongsToMany('App\Kelas', 'App\KelasSiswa');
+        return $this->belongsToMany('App\Kelas', 'App\KelasSiswa')
+            ->withPivot('id');
     }
 
     public function nilai()

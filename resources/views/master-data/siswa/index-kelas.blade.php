@@ -213,6 +213,7 @@
                                     <th>Nomor Telepon/HP</th>
                                     <th>Tempat Lahir</th>
                                     <th>Tanggal Lahir</th>
+                                    <th>Kelas</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -224,6 +225,7 @@
                                     <td>string. max 15</td>
                                     <td>string. max 50</td>
                                     <td>date</td>
+                                    <td>string</td>
                                 </tr>
                             </tbody>
                         </table>

@@ -9,75 +9,72 @@ use App\Nilai;
 use App\Pengaturan;
 use App\RapotUas;
 use App\RapotUts;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use App\Siswa;
 use Illuminate\Http\Request;
 
 class NilaiController extends Controller
 {
     public function index(Request $request)
     {
-        $kelasList = Kelas
-            ::whereHas('jadwal', function (Builder $query) {
-                $user = request()->user();
-                if ($user->role === 'guru') {
-                    $query->where('jadwals.guru_id', '=', $user->guru->id);
-                }
-            })
-            ->get();
+        $user = $request->user();
+        $view = $request->view ?? ($user->role === 'admin' ? 'siswa' : 'kelas');
+
+        $kelasList = $user->role === 'admin'
+            ? Kelas::all()
+            : $user->guru->kelas;
 
         if (!$request->has('kelas')) {
             return view('nilai.index', compact('kelasList'));
         }
 
-        $kelas = Kelas
-            ::with([
-                'mapel' => function (BelongsToMany $query) {
-                    $user = request()->user();
-                    if ($user->role === 'guru') {
-                        $query->where('jadwals.guru_id', '=', $user->guru->id);
-                    }
+        $kelas = Kelas::firstWhere('nama_kelas', '=', $request->kelas);
+
+        if ($view === 'kelas') {
+            $mapelList = $user->role === 'admin'
+                ? $kelas->mapel
+                : $kelas->mapelGuru($user->guru)->get();
+
+            if (!$request->has('mapel')) {
+                return view('nilai.index', compact('kelasList', 'kelas', 'mapelList'));
+            }
+
+            [$namaMapel, $kelompokMapel] = explode('_', $request->mapel);
+
+            $mapel = Mapel
+                ::where('nama_mapel', '=', $namaMapel)
+                ->where('kelompok', '=', $kelompokMapel)
+                ->first();
+
+            $kelas->load([
+                'siswa.nilai' => function ($query) use ($mapel) {
+                    $query->where('nilais.mapel_id', '=', $mapel->id);
                 }
-            ])
-            ->firstWhere('nama_kelas', '=', $request->kelas);
+            ]);
 
-        if (!$request->has('mapel')) {
-            return view('nilai.index', compact('kelasList', 'kelas'));
-        }
-
-        [$namaMapel, $kelompokMapel] = explode('_', $request->mapel);
-
-        $mapel = Mapel
-            ::where('nama_mapel', '=', $namaMapel)
-            ->where('kelompok', '=', $kelompokMapel)
-            ->whereHas('jadwal', function (Builder $query) use ($kelas) {
-                $query->where('jadwals.kelas_id', '=', $kelas->id);
-            })
-            ->first();
-
-        if (!$mapel) {
-            return view('nilai.index', compact('kelasList', 'kelas'));
-        }
-
-        $kelas->load('siswa');
-        $kelas->loadCount('siswa');
-
-        $kelas->load([
-            'siswa.nilai' => function (HasManyThrough $query) use ($mapel) {
-                $query->where('nilais.mapel_id', '=', $mapel->id);
-            }
-        ]);
-
-        $mapel->load([
-            'guru' => function (BelongsToMany $query) use ($kelas) {
-                $query->whereHas('jadwal', function (Builder $query) use ($kelas) {
+            $guru = $user->role === 'admin'
+                ? $mapel->guru()->whereHas('jadwal', function ($query) use ($kelas) {
                     $query->where('jadwals.kelas_id', '=', $kelas->id);
-                });
-            }
-        ]);
+                })->first()
+                : $user->guru;
 
-        return view('nilai.index', compact('kelasList', 'kelas', 'mapel'));
+            return view('nilai.index', compact('kelasList', 'kelas', 'mapelList', 'mapel', 'guru'));
+        } else if ($view === 'siswa') {
+            if (!$request->has('siswa')) {
+                return view('nilai.index', compact('kelasList', 'kelas'));
+            }
+
+            $namaSiswa = $request->siswa;
+
+            $siswa = Siswa::firstWhere('nama_siswa', '=', $namaSiswa);
+
+            $mapels = $kelas->mapel()->with([
+                'nilai' => function ($query) use ($siswa) {
+                    $query->where('kelas_siswa_id', '=', $siswa->kelas->pivot->id);
+                }
+            ])->get();
+
+            return view('nilai.index', compact('kelasList', 'kelas', 'siswa', 'mapels'));
+        }
     }
 
     public function store(Request $request)

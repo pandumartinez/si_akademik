@@ -20,7 +20,9 @@ class SiswaSeeder extends Seeder
 
         foreach ($kelasList as $index => $kelas) {
             foreach ($siswaList->get($index) as $siswa) {
-                $siswa->kelas()->attach($kelas->id, ['periode_id' => Periode::id()]);
+                $siswa->kelas()->sync([
+                    $kelas->id => ['periode_id' => Periode::id()]
+                ]);
             }
         }
     }

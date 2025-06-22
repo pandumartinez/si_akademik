@@ -47,7 +47,12 @@
     </style>
 @endpush
 
+@php
+    $view = request()->view ?? (auth()->user()->role === 'admin' ? 'siswa' : 'kelas');
+@endphp
+
 @section('content')
+    <!-- <h1>View {{ $view }}</h1> -->
     <form id="form-search" method="get" action="{{ route('nilai.index') }}"></form>
 
     <div class="col-md-12">
@@ -60,15 +65,16 @@
                 </button>
 
                 <button type="button" class="btn btn-default btn-sm"
-                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
+                    onclick="window.location='{{ route('jadwal.export') }}'">
                     <i class="nav-icon fas fa-file-export"></i>
                     &nbsp;
                     Export Excel
                 </button>
-                <div class="row">
-                    <div class="col-md-3">
+
+                <div class="row mt-3 pt-2 border-top">
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label for="jk">Kelas</label>
+                            <label for="kelas">Kelas</label>
 
                             <select form="form-search" id="kelas" name="kelas" class="select2 form-control"
                                 onchange="event.target.form.submit()">
@@ -84,14 +90,50 @@
                     </div>
 
                     @if (isset($kelas))
-                        <div class="col-md-5">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="view">View</label>
+
+                                <select form="form-search" id="view" name="view" class="select2 form-control"
+                                    onchange="event.target.form.submit()">
+                                    <option disabled>-- Pilih View --</option>
+                                    @if(auth()->user()->role === 'admin')
+                                        <option value="siswa" @if ($view === 'siswa') selected @endif>Siswa</option>
+                                    @endif
+                                    <option value="kelas" @if ($view === 'kelas') selected @endif>Kelas</option>
+                                </select>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($view === 'siswa' && isset($kelas))
+                        <div id="select-siswa" class="col-md-4">
+                            <div class="form-group">
+                                <label for="siswa">Siswa</label>
+
+                                <select form="form-search" id="siswa" name="siswa" class="select2 form-control"
+                                    onchange="event.target.form.submit()">
+                                    <option selected disabled>-- Pilih Siswa --</option>
+                                    @foreach ($kelas->siswa as $_siswa)
+                                        <option value="{{ $_siswa->nama_siswa }}"
+                                            @if (isset($siswa) && $_siswa->id === $siswa->id) selected @endif>
+                                            {{ $_siswa->nama_siswa }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($view === 'kelas' && isset($mapelList))
+                        <div id="select-mapel" class="col-md-5">
                             <div class="form-group">
                                 <label for="mapel">Mata Pelajaran</label>
 
                                 <select form="form-search" id="mapel" name="mapel" class="select2 form-control"
                                     onchange="event.target.form.submit()">
                                     <option selected disabled>-- Pilih Mapel --</option>
-                                    @foreach ($kelas->mapel as $_mapel)
+                                    @foreach ($mapelList as $_mapel)
                                         <option value="{{ $_mapel->nama_mapel }}_{{ $_mapel->kelompok }}"
                                             @if (isset($mapel) && $_mapel->id === $mapel->id) selected @endif>
                                             {{ $_mapel->nama_mapel }} ({{ $_mapel->kelompok }})
@@ -106,7 +148,15 @@
 
             <div class="card-body">
                 <div class="row">
-                    @if (!isset($kelas, $mapel))
+                    @if ($view === 'siswa' && !isset($siswa))
+                        <div class="col-md-12">
+                            <p class="mb-0 text-center text-muted">
+                                Pilih siswa terlebih dahulu
+                            </p>
+                        </div>
+                    @endif
+
+                    @if ($view === 'kelas' && !isset($kelas, $mapel))
                         <div class="col-md-12">
                             <p class="mb-0 text-center text-muted">
                                 Pilih kelas dan mata pelajaran terlebih dahulu
@@ -114,8 +164,104 @@
                         </div>
                     @endif
 
+                    @if ($view === 'siswa' && isset($siswa))
+                        <div class="col-md-12">
+                            <dl class="row">
+                                <dt class="col-sm-3">Nama Siswa</dt>
+                                <dd class="col-sm-3">{{ $siswa->nama_siswa }}</dd>
 
-                    @if (isset($kelas, $mapel))
+                                <dt class="col-sm-3">Kelas</dt>
+                                <dd class="col-sm-3">{{ $kelas->nama_kelas }}</dd>
+
+                                <dt class="col-sm-3">NIS / NISN</dt>
+                                <dd class="col-sm-3">{{ $siswa->nis }} / {{ $siswa->nisn }}</dd>
+
+                                <dt class="col-sm-3">Periode</dt>
+                                <dd class="col-sm-3">
+                                    {{ App\Periode::aktif() }}
+                                </dd>
+                            </dl>
+                        </div>
+
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="text-center">No.</th>
+                                        <th rowspan="2">Mata Pelajaran</th>
+                                        <th colspan="4" class="text-center">Nilai Tugas</th>
+                                        <th colspan="4" class="text-center">Nilai Ulangan Harian</th>
+                                        <th rowspan="2" class="text-center">UTS</th>
+                                        <th rowspan="2" class="text-center">UAS</th>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <th>Tugas 1</th>
+                                        <th>Tugas 2</th>
+                                        <th>Tugas 3</th>
+                                        <th>Tugas 4</th>
+                                        <th>Ulha 1</th>
+                                        <th>Ulha 2</th>
+                                        <th>Ulha 3</th>
+                                        <th>Ulha 4</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($mapels as $mapel)
+                                        @php
+                                            $nilai = $mapel->nilai->first();
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">{{ $loop->iteration }}</td>
+
+                                            <td>{{ $mapel->nama_mapel }}</td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->tugas_1 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->tugas_2 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->tugas_3 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->tugas_4 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->ulha_1 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->ulha_2 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->ulha_3 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->ulha_4 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->uts : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $nilai ? $nilai->uas : null }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+
+                    @if ($view === 'kelas' && isset($kelas, $mapel))
                         <div class="col-md-12">
                             <dl class="row">
                                 <dt class="col-sm-3">Nama Kelas</dt>
@@ -133,10 +279,10 @@
                                 <dd class="col-sm-3">{{ $mapel->nama_mapel }}</dd>
 
                                 <dt class="col-sm-3">Jumlah Siswa</dt>
-                                <dd class="col-sm-3">{{ $kelas->siswa_count }}</dd>
+                                <dd class="col-sm-3">{{ $kelas->siswa->count() }}</dd>
 
                                 <dt class="col-sm-3">Guru Mata Pelajaran</dt>
-                                <dd class="col-sm-3">{{ $mapel->guru->first()->nama_guru }}</dd>
+                                <dd class="col-sm-3">{{ $guru->nama_guru }}</dd>
                             </dl>
                         </div>
 
@@ -255,7 +401,7 @@
     </div>
 @endsection
 
-@if (auth()->user()->role === 'guru' && isset($kelas, $mapel))
+@if (auth()->user()->role === 'guru' && $view === 'kelas' && isset($kelas, $mapel))
     @section('script')
         <script>
             function saveNilai(input) {
@@ -272,18 +418,18 @@
                         nilai: input.name,
                         nilai_value: input.value,
                     },
-                    success: function() {
+                    success: function () {
                         input.parentElement.classList.remove('error');
                         toastr.success('Nilai berhasil disimpan.');
                     },
-                    error: function() {
+                    error: function () {
                         input.parentElement.classList.add('error');
                         toastr.error('Nilai tidak dapat disimpan.');
                     },
                 });
             }
 
-            $('input.nilai').on('blur', function(event) {
+            $('input.nilai').on('blur', function (event) {
                 var value = event.target.value;
                 if (value < 0) {
                     event.target.value = 0;
@@ -292,7 +438,7 @@
                 }
             });
 
-            $('input.nilai').on('change', function(event) {
+            $('input.nilai').on('change', function (event) {
                 saveNilai(event.target);
             });
         </script>

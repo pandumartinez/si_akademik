@@ -22,12 +22,11 @@
                     Import Excel
                 </button>
 
-                <button type="button" class="btn btn-default btn-sm"
-                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
+                <a href="{{ route('jadwal.export') }}" class="btn btn-default btn-sm">
                     <i class="nav-icon fas fa-file-export"></i>
                     &nbsp;
                     Export Excel
-                </button>
+                </a>
 
                 <!-- <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#drop-table">
                     <i class="nav-icon fas fa-minus-circle"></i>
@@ -173,8 +172,8 @@
         </div>
     </div>
 
-    <div id="import-excel" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+    <div id="import-excel" class="modal moda-primary fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Import Excel</h5>
@@ -184,29 +183,48 @@
                     </button>
                 </div>
 
-                <form method="post" action="{{ route('jadwal.import-excel') }}" enctype="multipart/form-data">
-                    <div class="modal-body">
-                        @csrf
-                        <div class="card card-outline card-primary">
-                            <div class="card-header">
-                                <h5 class="modal-title">Petunjuk:</h5>
-                            </div>
-                            <div class="card-body">
-                                <ul>
-                                    <li>rows 1 = nama hari</li>
-                                    <li>rows 2 = nama kelas</li>
-                                    <li>rows 3 = nama mapel</li>
-                                    <li>rows 4 = nama guru</li>
-                                    <li>rows 5 = jam mulai</li>
-                                    <li>rows 6 = jam selesai</li>
-                                    <li>rows 7 = nama ruang</li>
-                                </ul>
-                            </div>
-                        </div>
+                <form method="post" action="{{ route('jadwal.import') }}" enctype="multipart/form-data">
+                    @csrf
 
-                        <label>Pilih file excel</label>
+                    <div class="modal-body">
+                        <h5>Petunjuk Import</h5>
+
+                        <p>Gunakan format berikut pada file Excel yang diunggah atau gunakan <a target="_blank" href="{{ asset('templates/template-import-data-jadwal.xlsx') }}">template ini</a>.</p>
+
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Hari</th>
+                                    <th>Jam Mulai</th>
+                                    <th>Jam Selesai</th>
+                                    <th>Kelas</th>
+                                    <th>Mata Pelajaran</th>
+                                    <th>Guru</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>string</td>
+                                    <td>string</td>
+                                    <td>string</td>
+                                    <td>string</td>
+                                    <td>string</td>
+                                    <td>string</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
                         <div class="form-group">
-                            <input type="file" name="file" required="required">
+                            <label for="file">File Data</label>
+
+                            <div class="custom-file">
+                                <input id="file" type="file" name="file"
+                                    class="custom-file-input @error('file') is-invalid @enderror"
+                                    accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+                                    required>
+
+                                <label for="file" class="custom-file-label">Pilih file Excel atau CSV (.xls, .xlsx, .csv)</label>
+                            </div>
                         </div>
                     </div>
 

@@ -37,11 +37,17 @@ Route::middleware('auth')->group(function () {
     Route::resource('nilai', 'Rapot\NilaiController')
         ->only(['index', 'store']);
 
+    Route::get('rapot-uts/export', 'Rapot\RapotUtsController@export')
+        ->name('rapot-uts.export');
+
     Route::resource('rapot-uts', 'Rapot\RapotUtsController')
         ->only(['index', 'store']);
 
     Route::resource('rapot-uas', 'Rapot\RapotUasController')
         ->only(['index', 'store']);
+
+    Route::get('rapot-uas/export', 'Rapot\RapotUasController@export')
+        ->name('rapot-uas.export');
 
     Route::resource('predikat', 'Rapot\PredikatController')
         ->only(['index', 'store']);
@@ -59,8 +65,8 @@ Route::middleware('auth')->group(function () {
             ->name('home.dashboard');
 
         // Periode
-        Route::resource('periode','PeriodeController')
-            ->only(['index','store']);
+        Route::resource('periode', 'PeriodeController')
+            ->only(['index', 'store']);
 
         // Pengumuman
         Route::resource('pengumuman', 'PengumumanController')
@@ -108,7 +114,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         Route::patch('{siswa}/foto', 'MasterData\SiswaMasterDataController@updateFoto')
             ->name('siswa.update.foto');
-        
+
         Route::post('import', 'MasterData\SiswaMasterDataController@import')
             ->name('siswa.import');
 
@@ -126,11 +132,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Master Data: Jadwal
     Route::prefix('master-data/jadwal')->group(function () {
-        Route::post('import-excel', 'MasterData\JadwalMasterDataController@importExcel')
-            ->name('jadwal.import-excel');
+        Route::post('import', 'MasterData\JadwalMasterDataController@import')
+            ->name('jadwal.import');
 
-        Route::get('export-excel', 'MasterData\JadwalMasterDataController@exportExcel')
-            ->name('jadwal.export-excel');
+        Route::get('export-excel', 'MasterData\JadwalMasterDataController@export')
+            ->name('jadwal.export');
     });
 
     Route::resource('master-data/jadwal', 'MasterData\JadwalMasterDataController')

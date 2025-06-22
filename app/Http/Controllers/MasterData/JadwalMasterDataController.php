@@ -97,26 +97,28 @@ class JadwalMasterDataController extends Controller
             ->with('success', 'Data jadwal berhasil dihapus!');
     }
 
-    public function importExcel(Request $request)
+    private const IMPORT_MIME_TYPES = [
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'text/csv',
+    ];
+
+    public function import(Request $request)
     {
+        $mimeTypes = join(',', JadwalMasterDataController::IMPORT_MIME_TYPES);
+
         $request->validate([
-            'file' => 'required|mimes:csv,xls,xlsx'
+            'file' => "required|file|mimetypes:$mimeTypes"
         ]);
 
-        $file = $request->file('file');
-
-        $nama_file = rand() . $file->getClientOriginalName();
-
-        $file->move('file_jadwal', $nama_file);
-
-        Excel::import(new JadwalImport, public_path('/file_jadwal/' . $nama_file));
+        Excel::import(new JadwalImport, $request->file('file'));
 
         return redirect()->back()
-            ->with('success', 'Data Siswa Berhasil Diimport!');
+            ->with('success', 'Data jadwal berhasil di-import!');
     }
 
-    public function exportExcel()
+    public function export(Request $request)
     {
-        return Excel::download(new JadwalExport, 'jadwal.xlsx');
+        return Excel::download(new JadwalExport, 'data-jadwal.xlsx');
     }
 }

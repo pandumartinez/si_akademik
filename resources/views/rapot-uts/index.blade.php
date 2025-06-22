@@ -51,22 +51,27 @@
     </style>
 @endpush
 
+@php
+    $view = request()->view ?? (auth()->user()->role === 'admin' ? 'siswa' : 'kelas');
+@endphp
+
 @section('content')
+    <!-- <h1>View {{ $view }}</h1> -->
     <form id="form-search" method="get" action="{{ route('rapot-uts.index') }}"></form>
 
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-default btn-sm"
-                    onclick="window.location='{{ route('jadwal.export-excel') }}'">
+                <a href="{{ route('rapot-uts.export') }}" class="btn btn-default btn-sm">
                     <i class="nav-icon fas fa-file-export"></i>
                     &nbsp;
                     Export Excel
-                </button>
-                <div class="row">
-                    <div class="col-md-3">
+                </a>
+
+                <div class="row mt-3 pt-2 border-top">
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label for="jk">Kelas</label>
+                            <label for="kelas">Kelas</label>
 
                             <select form="form-search" id="kelas" name="kelas" class="select2 form-control"
                                 onchange="event.target.form.submit()">
@@ -81,8 +86,44 @@
                         </div>
                     </div>
 
-                    @if (isset($mapelList))
-                        <div class="col-md-5">
+                    @if (isset($kelas))
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="view">View</label>
+
+                                <select form="form-search" id="view" name="view" class="select2 form-control"
+                                    onchange="event.target.form.submit()">
+                                    <option disabled>-- Pilih View --</option>
+                                    @if(auth()->user()->role === 'admin')
+                                        <option value="siswa" @if ($view === 'siswa') selected @endif>Siswa</option>
+                                    @endif
+                                    <option value="kelas" @if ($view === 'kelas') selected @endif>Kelas</option>
+                                </select>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($view === 'siswa' && isset($kelas))
+                        <div id="select-siswa" class="col-md-4">
+                            <div class="form-group">
+                                <label for="siswa">Siswa</label>
+
+                                <select form="form-search" id="siswa" name="siswa" class="select2 form-control"
+                                    onchange="event.target.form.submit()">
+                                    <option selected disabled>-- Pilih Siswa --</option>
+                                    @foreach ($kelas->siswa as $_siswa)
+                                        <option value="{{ $_siswa->nama_siswa }}"
+                                            @if (isset($siswa) && $_siswa->id === $siswa->id) selected @endif>
+                                            {{ $_siswa->nama_siswa }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if ($view === 'kelas' && isset($mapelList))
+                        <div id="select-mapel" class="col-md-5">
                             <div class="form-group">
                                 <label for="mapel">Mata Pelajaran</label>
 
@@ -104,7 +145,15 @@
 
             <div class="card-body">
                 <div class="row">
-                    @if (!isset($kelas, $mapel))
+                    @if ($view === 'siswa' && !isset($siswa))
+                        <div class="col-md-12">
+                            <p class="mb-0 text-center text-muted">
+                                Pilih siswa terlebih dahulu
+                            </p>
+                        </div>
+                    @endif
+
+                    @if ($view === 'kelas' && !isset($kelas, $mapel))
                         <div class="col-md-12">
                             <p class="mb-0 text-center text-muted">
                                 Pilih kelas dan mata pelajaran terlebih dahulu
@@ -112,7 +161,88 @@
                         </div>
                     @endif
 
-                    @if (isset($kelas, $mapel))
+                    @if ($view === 'siswa' && isset($siswa))
+                        <div class="col-md-12">
+                            <dl class="row">
+                                <dt class="col-sm-3">Nama Siswa</dt>
+                                <dd class="col-sm-3">{{ $siswa->nama_siswa }}</dd>
+
+                                <dt class="col-sm-3">Kelas</dt>
+                                <dd class="col-sm-3">{{ $kelas->nama_kelas }}</dd>
+
+                                <dt class="col-sm-3">NIS / NISN</dt>
+                                <dd class="col-sm-3">{{ $siswa->nis }} / {{ $siswa->nisn }}</dd>
+
+                                <dt class="col-sm-3">Periode</dt>
+                                <dd class="col-sm-3">
+                                    {{ App\Periode::aktif() }}
+                                </dd>
+                            </dl>
+                        </div>
+
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="text-center">No.</th>
+                                        <th rowspan="2">Mata Pelajaran</th>
+                                        <th colspan="5" class="text-center">Pengetahuan/Kognitif</th>
+                                        <th rowspan="2" class="text-center">Praktik</th>
+                                        <th rowspan="2" class="text-center">Sikap</th>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <th>Tugas 1</th>
+                                        <th>Tugas 2</th>
+                                        <th>Ulha 1</th>
+                                        <th>Ulha 2</th>
+                                        <th>UTS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($mapels as $mapel)
+                                        @php
+                                            $rapotUts = $mapel->rapotUts->first();
+                                        @endphp
+                                        <tr>
+                                            <td class="text-center">{{ $loop->iteration }}</td>
+
+                                            <td>{{ $mapel->nama_mapel }}</td>
+
+                                            <td class="nilai text-center">
+                                                {{ $rapotUts ? $rapotUts->tugas_1 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $rapotUts ? $rapotUts->tugas_2 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $rapotUts ? $rapotUts->ulha_1 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $rapotUts ? $rapotUts->ulha_2 : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $rapotUts ? $rapotUts->uts : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $rapotUts ? $rapotUts->praktik : null }}
+                                            </td>
+
+                                            <td class="nilai text-center">
+                                                {{ $rapotUts ? $rapotUts->sikap : null }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+
+                    @if ($view === 'kelas' && isset($kelas, $mapel))
                         <div class="col-md-12">
                             <dl class="row">
                                 <dt class="col-sm-3">Nama Kelas</dt>
@@ -143,9 +273,7 @@
                                     <tr>
                                         <th rowspan="2" class="text-center">No. Induk</th>
                                         <th rowspan="2">Nama Siswa</th>
-                                        <th colspan="2" class="text-center">Nilai Tugas</th>
-                                        <th colspan="2" class="text-center">Nilai Ulangan Harian</th>
-                                        <th rowspan="2" class="text-center">UTS</th>
+                                        <th colspan="5" class="text-center">Pengetahuan/Kognitif</th>
                                         <th rowspan="2" class="text-center">Praktik</th>
                                         <th rowspan="2" class="text-center">Sikap</th>
                                     </tr>
@@ -154,6 +282,7 @@
                                         <th>Tugas 2</th>
                                         <th>Ulha 1</th>
                                         <th>Ulha 2</th>
+                                        <th>UTS</th>
                                     </tr>
                                 </thead>
                                 <tbody>

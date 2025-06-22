@@ -28,4 +28,19 @@ class Mapel extends Model
         return $this->belongsToMany('App\Guru', 'App\Jadwal')
             ->distinct('gurus.id');
     }
+
+    public function nilai()
+    {
+        return $this->hasMany('App\Nilai');
+    }
+
+    public function rapotUts()
+    {
+        return $this->hasMany('App\RapotUts');
+    }
+
+    public function rapotUas()
+    {
+        return $this->hasMany('App\RapotUas');
+    }
 }

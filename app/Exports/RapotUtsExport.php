@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Siswa;
+use App\Guru;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
@@ -17,44 +17,40 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class SiswaExport extends DefaultValueBinder implements FromCollection, WithHeadings, WithMapping, WithCustomValueBinder, ShouldAutoSize, WithColumnFormatting, WithStyles
+class RapotUtsExport extends DefaultValueBinder implements FromCollection, WithHeadings, WithMapping, WithCustomValueBinder, ShouldAutoSize, WithColumnFormatting, WithStyles
 {
     public function collection()
     {
-        return Siswa::all();
+        return Guru::all();
     }
 
     public function headings(): array
     {
         return [
-            'NIS',
-            'NISN',
-            'Nama Siswa',
+            'NIP',
+            'Nama Guru',
             'Jenis Kelamin',
             'Nomor Telepon/HP',
             'Tempat Lahir',
             'Tanggal Lahir',
-            'Kelas',
         ];
     }
 
-    public function map($siswa): array
+    public function map($guru): array
     {
         return [
-            $siswa->nis,
-            $siswa->nisn,
-            $siswa->nama_siswa,
-            $siswa->jk === 'L' ? 'Laki-laki' : 'Perempuan',
-            $siswa->telp,
-            $siswa->tmp_lahir,
-            Date::dateTimeToExcel($siswa->tgl_lahir),
-            $siswa->kelas->nama_kelas,
+            $guru->nip,
+            $guru->nama_guru,
+            $guru->jk === 'L' ? 'Laki-laki' : 'Perempuan',
+            $guru->telp,
+            $guru->tmp_lahir,
+            Date::dateTimeToExcel($guru->tgl_lahir),
         ];
     }
 
     public function bindValue(Cell $cell, $value)
     {
-        if ($cell->getColumn() === 'E') {
+        if ($cell->getColumn() === 'D') {
             $cell->setValueExplicit($value, DataType::TYPE_STRING);
 
             return true;
@@ -66,7 +62,7 @@ class SiswaExport extends DefaultValueBinder implements FromCollection, WithHead
     public function columnFormats(): array
     {
         return [
-            'G' => NumberFormat::FORMAT_DATE_DDMMYYYY,
+            'F' => NumberFormat::FORMAT_DATE_DDMMYYYY,
         ];
     }
 
