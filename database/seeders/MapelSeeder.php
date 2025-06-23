@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Mapel;
 use Illuminate\Database\Seeder;
 

@@ -1,21 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Siswa;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Siswa::class, function (Faker $faker) {
-    $L = $faker->boolean();
-    $gender = $L ? 'male' : 'female';
-    return [
-        'nis' => strval($faker->randomNumber(5)),
-        'nisn' => strval($faker->randomNumber(8)),
-        'nama_siswa' => $faker->firstName($gender) . ' ' . $faker->lastName($gender),
-        'jk' => $L ? 'L' : 'P',
-        'telp' => $faker->e164PhoneNumber,
-        'tmp_lahir' => $faker->city,
-        'tgl_lahir' => $faker->dateTimeBetween('-17 years', '-14 years'),
-        'foto' => $L ? 'uploads/siswa/52471919042020_male.jpg' : 'uploads/siswa/50271431012020_female.jpg'
-    ];
-});
+class SiswaFactory extends Factory
+{
+    public function definition()
+    {
+        $L = $this->faker->boolean();
+        $gender = $L ? 'male' : 'female';
+        return [
+            'nis' => strval($this->faker->randomNumber(5)),
+            'nisn' => strval($this->faker->randomNumber(8)),
+            'nama_siswa' => $this->faker->firstName($gender) . ' ' . $this->faker->lastName($gender),
+            'jk' => $L ? 'L' : 'P',
+            'telp' => $this->faker->e164PhoneNumber,
+            'tmp_lahir' => $this->faker->city,
+            'tgl_lahir' => $this->faker->dateTimeBetween('-17 years', '-14 years'),
+            'foto' => $L ? 'uploads/siswa/52471919042020_male.jpg' : 'uploads/siswa/50271431012020_female.jpg'
+        ];
+    }
+}

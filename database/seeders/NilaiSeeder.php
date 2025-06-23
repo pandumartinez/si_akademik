@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Kelas;
 use App\Nilai;
 use Illuminate\Database\Seeder;

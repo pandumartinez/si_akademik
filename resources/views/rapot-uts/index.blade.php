@@ -62,11 +62,13 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <a href="{{ route('rapot-uts.export') }}" class="btn btn-default btn-sm">
-                    <i class="nav-icon fas fa-file-export"></i>
-                    &nbsp;
-                    Export Excel
-                </a>
+                @if (isset($kelas))
+                    <a href="{{ route('rapot-uts.export', ['kelas' => $kelas->id]) }}" class="btn btn-default btn-sm">
+                        <i class="nav-icon fas fa-file-export"></i>
+                        &nbsp;
+                        Export Excel
+                    </a>
+                @endif
 
                 <div class="row mt-3 pt-2 border-top">
                     <div class="col-md-2">

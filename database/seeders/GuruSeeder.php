@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Deskripsi;
 use App\Guru;
 use App\Mapel;
@@ -13,7 +15,7 @@ class GuruSeeder extends Seeder
     {
         $jumlah = Mapel::distinct()->count('nama_mapel');
 
-        $guruList = factory(Guru::class, $jumlah)->create();
+        $guruList = Guru::factory()->count($jumlah)->create();
 
         $password = Hash::make('password');
 
@@ -27,7 +29,7 @@ class GuruSeeder extends Seeder
 
             foreach (['pengetahuan', 'keterampilan'] as $jenis) {
                 foreach (['A', 'B', 'C', 'D'] as $predikat) {
-                    $deskripsi = factory(Deskripsi::class)->make();
+                    $deskripsi = Deskripsi::factory()->make();
                     $deskripsi->jenis = $jenis;
                     $deskripsi->predikat = $predikat;
 

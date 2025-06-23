@@ -37,11 +37,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('nilai', 'Rapot\NilaiController')
         ->only(['index', 'store']);
 
-    Route::get('rapot-uts/export', 'Rapot\RapotUtsController@export')
-        ->name('rapot-uts.export');
-
     Route::resource('rapot-uts', 'Rapot\RapotUtsController')
         ->only(['index', 'store']);
+
+    Route::get('rapot-uts/export/{kelas}', 'Rapot\RapotUtsController@export')
+        ->name('rapot-uts.export');
 
     Route::resource('rapot-uas', 'Rapot\RapotUasController')
         ->only(['index', 'store']);

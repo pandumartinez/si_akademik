@@ -68,7 +68,7 @@ class ProfileController extends Controller
 
         } else if ($request->has('password')) {
             $request->validate([
-                'password_current' => 'bail|required|password',
+                'password_current' => 'bail|required|current_password',
                 'password' => 'bail|required|confirmed',
             ]);
 

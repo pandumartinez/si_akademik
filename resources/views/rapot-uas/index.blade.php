@@ -69,12 +69,11 @@
         <div class="card">
             <div class="card-header">
 
-                <button type="button" class="btn btn-default btn-sm"
-                    onclick="window.location='{{ route('jadwal.export') }}'">
+                <a href="{{ route('rapot-uas.export') }}" class="btn btn-default btn-sm">
                     <i class="nav-icon fas fa-file-export"></i>
                     &nbsp;
                     Export Excel
-                </button>
+                </a>
 
                 <div class="row mt-3 pt-2 border-top">
                     <div class="col-md-2">

@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Rapot;
 
-use App\Exports\RapotUtsExport;
 use App\Http\Controllers\Controller;
 use App\Kelas;
 use App\Mapel;
 use App\RapotUts;
 use App\Siswa;
-use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class RapotUtsController extends Controller
 {
@@ -96,15 +95,9 @@ class RapotUtsController extends Controller
         return response()->json();
     }
 
-    public function export(Request $request)
+    public function export(Request $request, Kelas $kelas)
     {
-        $kelas = Kelas::
-            where('nama_kelas', '=', $request->kelas)
-            ->first();
-
-        $namaSiswa = $request->siswa;
-
-        $siswa = Siswa::firstWhere('nama_siswa', '=', $namaSiswa);
+        $siswa = $kelas->siswa()->first();
 
         $mapels = $kelas->mapel()->with([
             'rapotUts' => function ($query) use ($siswa) {
@@ -112,9 +105,9 @@ class RapotUtsController extends Controller
             }
         ])->get();
 
-        // return Excel::download(new RapotUtsExport, 'data-rapot-uts.xlsx');
+        Pdf::view('rapot-uts.export', compact('kelas', 'siswa', 'mapels'))
+            ->save('pdf/rapot-uts/rapot-uts-' . Str::kebab($siswa->nama_siswa) . '.pdf');
 
-        // $pdf = PDF::loadView('rapot-uts.export')->setPaper('A4');
-        // return $pdf->download('rapor_uts_' . $siswa->nama_siswa . '.pdf');
+        return redirect()-back();
     }
 }

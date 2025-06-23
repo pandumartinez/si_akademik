@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Guru;
 use App\Jadwal;
 use App\Kelas;

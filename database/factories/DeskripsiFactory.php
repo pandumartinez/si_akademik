@@ -1,12 +1,15 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Deskripsi;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Deskripsi::class, function (Faker $faker) {
-    return [
-        'deskripsi' => $faker->paragraph()
-    ];
-});
+class DeskripsiFactory extends Factory
+{
+    public function definition()
+    {
+        return [
+            'deskripsi' => $this->faker->paragraph()
+        ];
+    }
+}

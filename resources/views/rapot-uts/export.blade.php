@@ -1,7 +1,3 @@
-@foreach
-
-@endforeach
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -54,7 +50,7 @@
 
 <body>
 
-    <img src="img/emblem.png" alt="Logo" class="logo">
+    <img src="{{ asset('img/emblem.png') }}" alt="Logo" class="logo">
     <h3>YAYASAN PENDIDIKAN "TUJUH BELAS" JAWA TIMUR<br>SMA YP 17 SURABAYA<br>TAHUN PELAJARAN 2023 - 2024</h3>
     <h3>LAPORAN CAPAIAN KOMPETENSI</h3>
 
@@ -104,17 +100,18 @@
         <tr>
             @foreach ($mapels as $mapel)
                 @php
-                    $nilai = $mapel->nilai->first();
+                    $rapotUts = $mapel->rapotUts->first();
                 @endphp
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td class="left">{{ $mapel->nama_mapel }}</td>
-                    <td>{{ $nilai ? $nilai->tugas_1 : null }}</td>
-                    <td>{{ $nilai ? $nilai->tugas_2 : null }}</td>
-                    <td>{{ $nilai ? $nilai->ulha_1 : null }}</td>
-                    <td>{{ $nilai ? $nilai->ulha_2 : null }}</td>
-                    <td>{{ $nilai ? $nilai->praktik : null }}</td>
-                    <td>{{ $nilai ? $nilai->sikap : null }}</td>
+                    <td>{{ $rapotUts?->tugas_1 ?? null }}</td>
+                    <td>{{ $rapotUts?->tugas_2 ?? null }}</td>
+                    <td>{{ $rapotUts?->ulha_1 ?? null }}</td>
+                    <td>{{ $rapotUts?->ulha_2 ?? null }}</td>
+                    <td>{{ $rapotUts?->uts ?? null }}</td>
+                    <td>{{ $rapotUts?->praktik ?? null }}</td>
+                    <td>{{ $rapotUts?->sikap ?? null }}</td>
                 </tr>
             @endforeach
         </tr>

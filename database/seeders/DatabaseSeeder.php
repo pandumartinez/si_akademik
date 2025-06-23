@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use App\Pengaturan;
 use App\Periode;
 use App\User;
