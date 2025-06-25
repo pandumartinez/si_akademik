@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Rapot;
 
-use App\Http\Controllers\Controller;
+use App\AbsenSiswa;
 use App\Kelas;
 use App\Mapel;
+use App\Periode;
 use App\RapotUts;
 use App\Siswa;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 class RapotUtsController extends Controller
@@ -47,8 +50,8 @@ class RapotUtsController extends Controller
                 ->first();
 
             $kelas->load([
-                'siswa.nilai' => function ($query) use ($mapel) {
-                    $query->where('nilais.mapel_id', '=', $mapel->id);
+                'siswa.rapotUts' => function ($query) use ($mapel) {
+                    $query->where('rapot_uts.mapel_id', '=', $mapel->id);
                 }
             ]);
 
@@ -97,17 +100,33 @@ class RapotUtsController extends Controller
 
     public function export(Request $request, Kelas $kelas)
     {
-        $siswa = $kelas->siswa()->first();
+        foreach ($kelas->siswa as $siswa) {
+            $jumlahAbsen = [
+                'izin' => $siswa->jumlahAbsenPeriodeIni('izin'),
+                'sakit' => $siswa->jumlahAbsenPeriodeIni('sakit'),
+                'tanpa keterangan' => $siswa->jumlahAbsenPeriodeIni('tanpa keterangan'),
+            ];
 
-        $mapels = $kelas->mapel()->with([
-            'rapotUts' => function ($query) use ($siswa) {
-                $query->where('kelas_siswa_id', '=', $siswa->kelas->pivot->id);
-            }
-        ])->get();
+            $mapels = $kelas->mapel()->with([
+                'rapotUts' => function ($query) use ($siswa) {
+                    $query->where('kelas_siswa_id', '=', $siswa->kelas->pivot->id);
+                }
+            ])->get();
 
-        Pdf::view('rapot-uts.export', compact('kelas', 'siswa', 'mapels'))
-            ->save('pdf/rapot-uts/rapot-uts-' . Str::kebab($siswa->nama_siswa) . '.pdf');
+            $filename = 'pdfs/rapot-uts/'
+                . $kelas->nama_kelas
+                . '-'
+                . Str::kebab($siswa->nama_siswa)
+                . '-'
+                . \Carbon\Carbon::now()->format('dmYHis')
+                . '.pdf';
 
-        return redirect()-back();
+            Pdf::view('rapot-uts.export', compact('kelas', 'siswa', 'jumlahAbsen', 'mapels'))
+                ->disk('local')
+                ->save($filename);
+        }
+
+        return redirect()->back()
+            ->with('success', "Berhasil mengekspor rapot kelas $kelas->nama_kelas");
     }
 }

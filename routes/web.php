@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('rapot-uas', 'Rapot\RapotUasController')
         ->only(['index', 'store']);
 
-    Route::get('rapot-uas/export', 'Rapot\RapotUasController@export')
+    Route::get('rapot-uas/export/{kelas}', 'Rapot\RapotUasController@export')
         ->name('rapot-uas.export');
 
     Route::resource('predikat', 'Rapot\PredikatController')
@@ -184,4 +184,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::delete('{id}', 'Trash\UserTrashController@destroy')
             ->name('user.destroy.permanent');
     });
+});
+
+Route::get('/test', function () {
+    
 });

@@ -1,12 +1,20 @@
 @extends('layouts.app')
 
 @section('heading')
-    @if (isset($kelas))
-        Absensi Kelas {{ $kelas->nama_kelas }}
-    @else
-        Absensi Kelas
+    @if (auth()->user()->role === 'admin')
+        @if (isset($kelas))
+            Absensi Kelas {{ $kelas->nama_kelas }}
+        @else
+            Absensi Kelas
+        @endif
+    @elseif (auth()->user()->role === 'guru')
+        @if (isset($kelas))
+            Absensi Kelas {{ $kelas->nama_kelas }}
+            Hari {{ \Carbon\Carbon::now()->translatedFormat('l, j F') }}
+        @else
+            Absensi Kelas
+        @endif
     @endif
-    Hari {{ \Carbon\Carbon::now()->translatedFormat('l, j F') }}
 @endsection
 
 @section('breadcrumbs')

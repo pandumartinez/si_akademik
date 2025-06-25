@@ -12,6 +12,8 @@ class Periode extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'tanggal_awal' => 'date',
+        'tanggal_akhir' => 'date',
         'aktif' => 'boolean',
     ];
 

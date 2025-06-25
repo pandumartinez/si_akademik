@@ -9,6 +9,10 @@ use App\Pengaturan;
 use App\RapotUas;
 use App\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
+use Spatie\LaravelPdf\Facades\Pdf;
+
 
 class RapotUasController extends Controller
 {
@@ -46,8 +50,8 @@ class RapotUasController extends Controller
                 ->first();
 
             $kelas->load([
-                'siswa.nilai' => function ($query) use ($mapel) {
-                    $query->where('nilais.mapel_id', '=', $mapel->id);
+                'siswa.rapotUas' => function ($query) use ($mapel) {
+                    $query->where('rapot_uas.mapel_id', '=', $mapel->id);
                 }
             ]);
 
@@ -135,5 +139,37 @@ class RapotUasController extends Controller
         ], $data);
 
         return response()->json($response);
+    }
+
+    public function export(Request $request, Kelas $kelas)
+    {
+        foreach ($kelas->siswa as $siswa) {
+            $jumlahAbsen = [
+                'izin' => $siswa->jumlahAbsenPeriodeIni('izin'),
+                'sakit' => $siswa->jumlahAbsenPeriodeIni('sakit'),
+                'tanpa keterangan' => $siswa->jumlahAbsenPeriodeIni('tanpa keterangan'),
+            ];
+
+            $mapels = $kelas->mapel()->with([
+                'rapotUas' => function ($query) use ($siswa) {
+                    $query->where('kelas_siswa_id', '=', $siswa->kelas->pivot->id);
+                }
+            ])->get();
+
+            $filename = 'pdfs/rapot-uas/'
+                . $kelas->nama_kelas
+                . '-'
+                . Str::kebab($siswa->nama_siswa)
+                . '-'
+                . \Carbon\Carbon::now()->format('dmYHis')
+                . '.pdf';
+
+            Pdf::view('rapot-uas.export', compact('kelas', 'siswa', 'jumlahAbsen', 'mapels'))
+                ->disk('local')
+                ->save($filename);
+        }
+
+        return redirect()->back()
+            ->with('success', "Berhasil mengekspor rapot kelas $kelas->nama_kelas");
     }
 }

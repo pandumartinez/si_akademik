@@ -72,6 +72,19 @@ class Siswa extends Model
         return $this->hasMany('App\AbsenSiswa');
     }
 
+    public function absenPeriodeIni()
+    {
+        $periode = Periode::aktif();
+
+        return $this->absen()
+            ->whereBetween('created_at', [$periode->tanggal_awal, $periode->tanggal_akhir]);
+    }
+
+    public function jumlahAbsenPeriodeIni($keterangan)
+    {
+        return $this->absenPeriodeIni()->where('keterangan', '=', $keterangan)->count();
+    }
+
     public function absenHariIni()
     {
         return $this->hasMany('App\AbsenSiswa')
