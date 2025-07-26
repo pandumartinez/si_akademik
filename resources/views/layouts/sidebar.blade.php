@@ -31,24 +31,9 @@
 
                         <x-nav.item label="Data Guru" route="guru.index" pattern="master-data/guru*" />
 
-                        <x-nav.item label="Data Siswa" route="siswa.index" pattern="master-data/siswa*" />
-
                         <x-nav.item label="Data Kelas" route="kelas.index" pattern="master-data/kelas*" />
 
-                        <x-nav.item label="Data Jadwal" route="jadwal.index" pattern="master-data/jadwal*" />
-
                         <x-nav.item label="Data User" route="user.index" pattern="master-data/user*" />
-                    </x-nav.group>
-                @endif
-
-                @if ($role === 'admin')
-                    <x-nav.group icon="fa-recycle" label="View Trash" :patterns="['trash/*']">
-
-                        <x-nav.item label="Trash Guru" route="guru.index.trash" pattern="trash/guru" />
-
-                        <x-nav.item label="Trash Siswa" route="siswa.index.trash" pattern="trash/siswa" />
-
-                        <x-nav.item label="Trash User" route="user.index.trash" pattern="trash/user" />
                     </x-nav.group>
                 @endif
 

@@ -133,9 +133,9 @@
                                     onchange="event.target.form.submit()">
                                     <option selected disabled>-- Pilih Mapel --</option>
                                     @foreach ($mapelList as $_mapel)
-                                        <option value="{{ $_mapel->nama_mapel }}_{{ $_mapel->kelompok }}"
+                                        <option value="{{ $_mapel->nama_mapel }}_{{ $_mapel->kelompok->kode }}"
                                             @if (isset($mapel) && $_mapel->id === $mapel->id) selected @endif>
-                                            {{ $_mapel->nama_mapel }} ({{ $_mapel->kelompok }})
+                                            {{ $_mapel->nama_mapel }} ({{ $_mapel->kelompok->kode }})
                                         </option>
                                     @endforeach
                                 </select>

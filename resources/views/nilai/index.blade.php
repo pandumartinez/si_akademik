@@ -58,18 +58,6 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#import-excel">
-                    <i class="nav-icon fas fa-file-import"></i>
-                    &nbsp;
-                    Import Excel
-                </button>
-
-                <button type="button" class="btn btn-default btn-sm"
-                    onclick="window.location='{{ route('jadwal.export') }}'">
-                    <i class="nav-icon fas fa-file-export"></i>
-                    &nbsp;
-                    Export Excel
-                </button>
 
                 <div class="row mt-3 pt-2 border-top">
                     <div class="col-md-2">
@@ -134,9 +122,9 @@
                                     onchange="event.target.form.submit()">
                                     <option selected disabled>-- Pilih Mapel --</option>
                                     @foreach ($mapelList as $_mapel)
-                                        <option value="{{ $_mapel->nama_mapel }}_{{ $_mapel->kelompok }}"
+                                        <option value="{{ $_mapel->nama_mapel }}_{{ $_mapel->kelompok->kode }}"
                                             @if (isset($mapel) && $_mapel->id === $mapel->id) selected @endif>
-                                            {{ $_mapel->nama_mapel }} ({{ $_mapel->kelompok }})
+                                            {{ $_mapel->nama_mapel }} ({{ $_mapel->kelompok->kode }})
                                         </option>
                                     @endforeach
                                 </select>

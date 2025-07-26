@@ -60,7 +60,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group">
                                 <label for="tanggal">Tanggal</label>
 
@@ -104,18 +104,20 @@
                             </dl>
                         </div>
 
-                        <div class="col-md-12 mt-3">
-                            <dl class="row">
-                                <dt class="col-sm-3">Jumlah Izin</dt>
-                                <dd id="jumlah-izin" class="col-sm-1">{{ $jumlah['izin'] ?? 0 }}</dd>
+                        @if (auth()->user()->role === 'admin')
+                            <div class="col-md-12 mt-3">
+                                <dl class="row">
+                                    <dt class="col-sm-3">Jumlah Izin</dt>
+                                    <dd id="jumlah-izin" class="col-sm-1">{{ $jumlah['izin'] ?? 0 }}</dd>
 
-                                <dt class="col-sm-3">Jumlah Sakit</dt>
-                                <dd id="jumlah-sakit" class="col-sm-1">{{ $jumlah['sakit'] ?? 0 }}</dd>
+                                    <dt class="col-sm-3">Jumlah Sakit</dt>
+                                    <dd id="jumlah-sakit" class="col-sm-1">{{ $jumlah['sakit'] ?? 0 }}</dd>
 
-                                <dt class="col-sm-3">Jumlah Tanpa Keterangan</dt>
-                                <dd id="jumlah-tanpa-keterangan" class="col-sm-1">{{ $jumlah['tanpa keterangan'] ?? 0 }}</dd>
-                            </dl>
-                        </div>
+                                    <dt class="col-sm-3">Jumlah Tanpa Keterangan</dt>
+                                    <dd id="jumlah-tanpa-keterangan" class="col-sm-1">{{ $jumlah['tanpa keterangan'] ?? 0 }}</dd>
+                                </dl>
+                            </div>
+                        @endif
 
                         <div class="col-md-12">
                             <table class="table table-bordered table-striped table-hover">
@@ -134,7 +136,7 @@
                                 <tbody>
                                     @foreach ($kelas->siswa as $siswa)
                                         @php
-                                            $kehadiran = $siswa->absenHariIni ? $siswa->absenHariIni->keterangan : null;
+                                            $kehadiran = $siswa->absen->first()?->keterangan ?? null;
                                         @endphp
                                         <tr>
                                             <form id="{{ $loop->iteration }}-form-absen">
@@ -146,21 +148,21 @@
                                             <td>{{ $siswa->nama_siswa }}</td>
 
                                             <td class="absen">
-                                                <input form="{{ $loop->iteration }}-form-absen" type="checkbox"
+                                                <input form="{{ $loop->iteration }}-form-absen" type="radio"
                                                     class="absen" name="keterangan" value="izin"
                                                     @if (auth()->user()->role === 'admin') disabled @endif
                                                     @if ($kehadiran === 'izin') checked @endif>
                                             </td>
 
                                             <td class="absen">
-                                                <input form="{{ $loop->iteration }}-form-absen" type="checkbox"
+                                                <input form="{{ $loop->iteration }}-form-absen" type="radio"
                                                     class="absen" name="keterangan" value="sakit"
                                                     @if (auth()->user()->role === 'admin') disabled @endif
                                                     @if ($kehadiran === 'sakit') checked @endif>
                                             </td>
 
                                             <td class="absen">
-                                                <input form="{{ $loop->iteration }}-form-absen" type="checkbox"
+                                                <input form="{{ $loop->iteration }}-form-absen" type="radio"
                                                     class="absen" name="keterangan" value="tanpa keterangan"
                                                     @if (auth()->user()->role === 'admin') disabled @endif
                                                     @if ($kehadiran === 'tanpa keterangan') checked @endif>
@@ -180,7 +182,7 @@
 @if (auth()->user()->role === 'guru' && Auth::user()->guru->kelasWali)
     @section('script')
         <script>
-            function saveAbsen(input) {
+            function saveAbsen(radio) {
                 $.ajax({
                     type: 'post',
                     url: '{{ route('absen-siswa.store') }}',
@@ -189,32 +191,22 @@
                     },
                     dataType: 'json',
                     data: {
-                        siswa_id: input.form.elements.siswa_id.value,
-                        keterangan: input.value,
+                        siswa_id: radio.form.elements.siswa_id.value,
+                        keterangan: radio.value,
                     },
                     success: function () {
-                        input.parentElement.classList.remove('error');
+                        radio.parentElement.classList.remove('error');
                         toastr.success('Absen berhasil disimpan.');
-
-                        var jumlahEl = $(`#jumlah-${input.value.replace(' ', '-')}`);
-                        jumlahEl.text(Number.parseInt(jumlahEl.text()) + 1);
                     },
                     error: function () {
-                        input.parentElement.classList.add('error');
+                        radio.parentElement.classList.add('error');
                         toastr.error('Absen tidak dapat disimpan.');
                     },
                 });
             }
 
             $('input.absen').on('change', function (event) {
-                var checkbox = event.target;
-
-                saveAbsen(checkbox);
-
-                $(`input.absen[form="${checkbox.form.id}"][value!="${checkbox.value}"]:checked`)
-                    .each(() => {
-                        this.checked = false;
-                    });
+                saveAbsen(event.target);
             });
         </script>
     @endsection

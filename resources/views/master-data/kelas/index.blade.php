@@ -10,9 +10,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary btn-sm"
-                    data-toggle="modal"
-                    data-target="#modal-kelas"
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#modal-kelas"
                     onclick="setModalKelas('create')">
                     <i class="nav-icon fas fa-folder-plus"></i>
                     &nbsp;
@@ -53,32 +51,24 @@
                                         Lihat Jadwal
                                     </a>
 
-                                    <button type="button" class="btn btn-success btn-sm"
-                                        data-toggle="modal"
-                                        data-target="#modal-kelas"
-                                        onclick="
+                                    <button type="button" class="btn btn-success btn-sm" data-toggle="modal"
+                                        data-target="#modal-kelas" onclick="
                                             setModalKelas('edit', {
-                                                kelasId: {{ $_kelas->id }},
-                                                namaKelas: '{{ $_kelas->nama_kelas }}',
-                                                waliKelas: {{ $_kelas->waliKelas ? $_kelas->waliKelas->id : 'null' }},
+                                            kelasId: {{ $_kelas->id }},
+                                            namaKelas: '{{ $_kelas->nama_kelas }}',
+                                            waliKelas: {{ $_kelas->waliKelas ? $_kelas->waliKelas->id : 'null' }},
                                             });">
                                         <i class="nav-icon fas fa-edit"></i>
                                         &nbsp;
                                         Edit
                                     </button>
 
-                                    <button type="submit" form="{{ $loop->iteration }}-kelas-destroy"
-                                        class="btn btn-danger btn-sm">
+                                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapus-kelas"
+                                        onclick="hapusKelas('{{ $_kelas->id }}')">
                                         <i class="nav-icon fas fa-trash-alt"></i>
                                         &nbsp;
                                         Hapus
                                     </button>
-
-                                    <form id="{{ $loop->iteration }}-kelas-destroy"
-                                        method="post" action="{{ route('kelas.destroy', $_kelas->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                    </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -109,22 +99,20 @@
                                     <label for="nama_kelas">Nama Kelas</label>
 
                                     <input id="nama_kelas" type='text' name='nama_kelas'
-                                        class="form-control @error('nama_kelas') is-invalid @enderror" placeholder="Nama Kelas"
-                                        required>
+                                        class="form-control @error('nama_kelas') is-invalid @enderror"
+                                        placeholder="Nama Kelas" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="wali_kelas">Wali Kelas</label>
 
                                     <select id="wali_kelas" name="wali_kelas"
-                                        class="select2 form-control @error('wali_kelas') is-invalid @enderror"
-                                        required>
+                                        class="select2 form-control @error('wali_kelas') is-invalid @enderror" required>
                                         <option value="">-- Pilih Wali Kelas --</option>
                                         @foreach ($gurus as $guru)
-                                            <option
-                                                @if ($guru->kelasWali) disabled @endif
-                                                value="{{ $guru->id }}">
-                                                {{ $guru->nama_guru }} @if ($guru->kelasWali) ({{ $guru->kelasWali->nama_kelas }}) @endif
+                                            <option @if ($guru->kelasWali) disabled @endif value="{{ $guru->id }}">
+                                                {{ $guru->nama_guru }} @if ($guru->kelasWali)
+                                                ({{ $guru->kelasWali->nama_kelas }}) @endif
                                             </option>
                                         @endforeach
                                     </select>
@@ -150,10 +138,46 @@
             </div>
         </div>
     </div>
+
+    <div id="hapus-kelas" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h4 class="modal-title">Konfirmasi Hapus</h4>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p>
+                        Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.
+                    </p>
+
+                    <form id="kelas-destroy" method="post">
+                        @csrf
+                        @method('delete')
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" form="kelas-destroy" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('script')
     <script>
+        function hapusKelas(id) {
+            const actionUrl = '{{ route('kelas.destroy', ':id') }}';
+
+            document.getElementById('kelas-destroy').action = actionUrl.replace(':id', id);
+        }
+        
         function setModalKelas(mode, param) {
             if (mode === 'create') {
                 $('#modal-kelas .modal-title').text('Tambah Data Kelas');

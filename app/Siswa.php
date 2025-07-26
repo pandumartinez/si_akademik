@@ -36,11 +36,6 @@ class Siswa extends Model
         return $this->kelas()->first();
     }
 
-    public function getAbsenHariIniAttribute()
-    {
-        return $this->absenHariIni()->first();
-    }
-
     public function kelasSiswa()
     {
         return $this->hasMany('App\KelasSiswa');
@@ -83,11 +78,5 @@ class Siswa extends Model
     public function jumlahAbsenPeriodeIni($keterangan)
     {
         return $this->absenPeriodeIni()->where('keterangan', '=', $keterangan)->count();
-    }
-
-    public function absenHariIni()
-    {
-        return $this->hasMany('App\AbsenSiswa')
-            ->whereDate('created_at', '=', date('Y-m-d'));
     }
 }

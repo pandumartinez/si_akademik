@@ -1,0 +1,18 @@
+Tambahan TA Bu Maya 
+[x] 1. tambah master tabel kelompok untuk mapel 
+
+[x] 2. data guru harusnya langsung nampil nama guru bukan mapel dulu, isinya jadi nama guru + mapelnya apa
+
+[ ] 3. tambah master tabel jabatan untuk guru, isinya kepsek, wakil kepsek, wali kelas 10a, wali kelas 10b
+
+[x] 4. data siswa & data jadwal ga perlu ada karena sudah masuk di data kelas
+
+[ ] 5. absen guru (guru) cuma bisa check in & check out + lokasi untuk memastikan guru hadir, ditambah guru bisa melihat riwayat absen sendiri
+
+[ ] 6. absen guru (admin) bisa melihat absen semua guru
+
+[ ] 7. absen siswa hanya di buka oleh admin dari jam 7 sampai jam 8 lalu ditutup, kalo misal jam 12 ada siswa yang izin pulang, maka admin bisa membukakan absen siswa terus diupdate lagi oleh guru, lalu admin menutup kembali
+
+[x] 8. view trash gausah onok, diganti confirmation alert
+
+[ ] 9. log

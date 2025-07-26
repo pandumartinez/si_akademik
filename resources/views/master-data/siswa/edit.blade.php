@@ -3,7 +3,11 @@
 @section('heading', 'Edit Siswa')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item"><a href="{{ route('siswa.index') }}">Data Siswa</a></li>
+    <li class="breadcrumb-item">
+        <a href="{{ route('siswa.index', ['kelas' => Crypt::encrypt($siswa->kelas->id)]) }}">
+            Data Siswa {{ $siswa->kelas->nama_kelas }}
+        </a>
+    </li>
     <li class="breadcrumb-item active">Edit Siswa</li>
 @endsection
 

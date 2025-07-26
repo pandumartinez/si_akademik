@@ -110,7 +110,7 @@
                                         <option value="">-- Pilih Mapel --</option>
                                         @foreach ($mapels as $mapel)
                                             <option value="{{ $mapel->id }}">
-                                                {{ $mapel->nama_mapel }} ({{ $mapel->kelompok }})
+                                                {{ $mapel->nama_mapel }} ({{ $mapel->kelompok->kode }})
                                             </option>
                                         @endforeach
                                     </select>

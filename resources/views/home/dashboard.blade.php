@@ -48,7 +48,7 @@
             <div class="icon">
                 <i class="fas fa-id-card nav-icon"></i>
             </div>
-            <a href="{{ route('siswa.index') }}" class="small-box-footer">
+            <a href="{{ route('kelas.index') }}" class="small-box-footer">
                 More info
                 <i class="ml-1 fas fa-arrow-circle-right"></i>
             </a>
@@ -96,7 +96,7 @@
             <div class="icon">
                 <i class="fas fa-calendar-alt nav-icon"></i>
             </div>
-            <a href="{{ route('jadwal.index') }}" class="small-box-footer">
+            <a href="{{ route('kelas.index') }}" class="small-box-footer">
                 More info
                 <i class="ml-1 fas fa-arrow-circle-right"></i>
             </a>

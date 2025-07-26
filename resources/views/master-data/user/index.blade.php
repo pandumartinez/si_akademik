@@ -10,9 +10,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary btn-sm"
-                    data-toggle="modal"
-                    data-target="#tambah-user">
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah-user">
                     <i class="nav-icon fas fa-folder-plus"></i>
                     &nbsp;
                     Tambah Data User
@@ -47,18 +45,12 @@
                                         </a>
                                     @endif
 
-                                    <button type="submit" form="{{ $loop->iteration }}-user-destroy"
-                                        class="btn btn-danger btn-sm">
+                                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapus-user"
+                                        onclick="hapusUser('{{ $user->id }}')">
                                         <i class="nav-icon fas fa-trash-alt"></i>
                                         &nbsp;
                                         Hapus
                                     </button>
-
-                                    <form id="{{ $loop->iteration }}-user-destroy"
-                                        method="post" action="{{ route('user.destroy', $user->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                    </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -89,8 +81,7 @@
                                     <label for="email">Email</label>
 
                                     <input id="email" type="email" name="email"
-                                        class="form-control @error('email') is-invalid @enderror"
-                                        placeholder="Alamat email"
+                                        class="form-control @error('email') is-invalid @enderror" placeholder="Alamat email"
                                         required>
                                 </div>
 
@@ -98,8 +89,7 @@
                                     <label for="role">Role</label>
 
                                     <select id="role" name="role"
-                                        class="select2 form-control @error('role') is-invalid @enderror"
-                                        required>
+                                        class="select2 form-control @error('role') is-invalid @enderror" required>
                                         <option value="">-- Pilih role --</option>
                                         <option value="admin">Admin</option>
                                         @if ($gurus->isNotEmpty())
@@ -112,8 +102,7 @@
                                     <label for="name">Username</label>
 
                                     <input id="name" type="text" name="name"
-                                        class="form-control @error('name') is-invalid @enderror"
-                                        placeholder="Nama user"
+                                        class="form-control @error('name') is-invalid @enderror" placeholder="Nama user"
                                         required>
                                 </div>
 
@@ -134,8 +123,7 @@
 
                                     <input id="password" type="password" name="password"
                                         class="form-control @error('password') is-invalid @enderror"
-                                        placeholder="Password user"
-                                        required>
+                                        placeholder="Password user" required>
                                 </div>
 
                                 <div class="form-group">
@@ -143,8 +131,7 @@
 
                                     <input id="password-confirm" type="password" name="password_confirmation"
                                         class="form-control @error('password') is-invalid @enderror"
-                                        placeholder="Konfirmasi password user"
-                                        required>
+                                        placeholder="Konfirmasi password user" required>
                                 </div>
                             </div>
                         </div>
@@ -167,10 +154,46 @@
             </div>
         </div>
     </div>
+
+    <div id="hapus-user" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h4 class="modal-title">Konfirmasi Hapus</h4>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p>
+                        Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.
+                    </p>
+
+                    <form id="user-destroy" method="post">
+                        @csrf
+                        @method('delete')
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" form="user-destroy" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('script')
     <script>
+        function hapusUser(id) {
+            const actionUrl = '{{ route('user.destroy', ':id') }}';
+
+            document.getElementById('user-destroy').action = actionUrl.replace(':id', id);
+        }
+
         $('#role').on('change', function (event) {
             var role = event.target.value;
 

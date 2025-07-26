@@ -38,21 +38,11 @@
                                     class="select2 form-control @error('kelompok') is-invalid @enderror"
                                     required>
                                     <option value="">-- Pilih kelompok mapel --</option>
-                                    <option
-                                        @if ($mapel->kelompok === 'A') selected @endif
-                                        value="A">
-                                        Pelajaran Wajib/Umum
+                                    @foreach ($kelompokMapel as $kelompok)
+                                        <option value="{{ $kelompok->id }}" @if ($mapel->kelompok->id === $kelompok->id) selected @endif>
+                                        Pelajaran {{ $kelompok->nama_kelompok }}
                                     </option>
-                                    <option
-                                        @if ($mapel->kelompok === 'B') selected @endif
-                                        value="B">
-                                        Pelajaran Peminatan
-                                    </option>
-                                    <option
-                                        @if ($mapel->kelompok === 'C') selected @endif
-                                        value="C">
-                                        Pelajaran Lintas Minat
-                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

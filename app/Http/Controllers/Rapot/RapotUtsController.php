@@ -46,7 +46,7 @@ class RapotUtsController extends Controller
 
             $mapel = Mapel
                 ::where('nama_mapel', '=', $namaMapel)
-                ->where('kelompok', '=', $kelompokMapel)
+                ->whereRelation('kelompok', 'kode', $kelompokMapel)
                 ->first();
 
             $kelas->load([

@@ -12,7 +12,8 @@ class CreateMapelsTable extends Migration
             $table->id();
 
             $table->string('nama_mapel', 50);
-            $table->enum('kelompok', ['A', 'B', 'C']);
+            $table->foreignId('kelompok_mapel');
+            $table->foreign('kelompok_mapel')->references('id')->on('kelompok_mapel');
 
             $table->timestamps();
         });

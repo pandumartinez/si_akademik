@@ -25,24 +25,28 @@ class AbsenSiswaController extends Controller
 
             $kelas = Kelas::with([
                 'siswa',
-                'siswa.absenHariIni' => function ($query) use ($tanggal) {
+                'siswa.absen' => function ($query) use ($tanggal) {
                     $query->whereDate('created_at', '=', $tanggal);
                 },
             ])
                 ->firstWhere('nama_kelas', '=', $request->kelas);
 
-            $data = compact('kelasList', 'kelas', 'tanggal');
+            $data = compact('kelasList', 'tanggal', 'kelas');
         } else {
-            $kelas = $user->guru->kelasWali;
+            $kelas = $user->guru->kelasWali()->with([
+                'siswa',
+                'siswa.absen' => function ($query) {
+                    $query->whereDate('created_at', '=', date('Y-m-d'));
+                }
+            ])
+                ->first();
 
             $data = compact('kelas');
         }
 
-        $jumlah = $data['kelas']->siswa->countBy(
-            fn($siswa) => $siswa->absenHariIni ? $siswa->absenHariIni->keterangan : null
+        $data['jumlah'] = $kelas->siswa->countBy(
+            fn($siswa) => $siswa->absen->first()?->keterangan ?? null
         );
-
-        $data['jumlah'] = $jumlah;
 
         return view('absen-siswa.index', $data);
     }

@@ -10,9 +10,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary btn-sm"
-                    data-toggle="modal"
-                    data-target="#tambah-mapel">
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah-mapel">
                     <i class="nav-icon fas fa-folder-plus"></i>
                     &nbsp;
                     Tambah Data Mapel
@@ -34,13 +32,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $mapel->nama_mapel }}</td>
-                                @if ($mapel->kelompok == "A")
-                                    <td>{{ $mapel->kelompok }} (Wajib/Umum)</td>
-                                @elseif ($mapel->kelompok == "B")
-                                    <td>{{ $mapel->kelompok }} (Peminatan)</td>
-                                @else
-                                    <td>{{ $mapel->kelompok }} (Lintas Minat)</td>
-                                @endif
+                                <td>{{ $mapel->kelompok->kode }} ({{ $mapel->kelompok->nama_kelompok }})</td>
                                 <td>
                                     <a href="{{ route('mapel.edit', Crypt::encrypt($mapel->id)) }}"
                                         class="btn btn-success btn-sm">
@@ -49,18 +41,12 @@
                                         Edit
                                     </a>
 
-                                    <button type="submit" form="{{ $loop->iteration }}-mapel-destroy"
-                                        class="btn btn-danger btn-sm">
+                                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapus-mapel"
+                                        onclick="hapusMapel('{{ $mapel->id }}')">
                                         <i class="nav-icon fas fa-trash-alt"></i>
                                         &nbsp;
                                         Hapus
                                     </button>
-
-                                    <form id="{{ $loop->iteration }}-mapel-destroy"
-                                        method="post" action="{{ route('mapel.destroy', $mapel->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                    </form>
                                 </td>
                             </tr>
                         @endforeach
@@ -92,20 +78,20 @@
 
                                     <input id="nama_mapel" type="text" name="nama_mapel"
                                         class="form-control @error('nama_mapel') is-invalid @enderror"
-                                        placeholder="Nama mata pelajaran"
-                                        required>
+                                        placeholder="Nama mata pelajaran" required>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="kelompok">Kelompok</label>
 
                                     <select id="kelompok" name="kelompok"
-                                        class="select2 form-control @error('kelompok') is-invalid @enderror"
-                                        required>
+                                        class="select2 form-control @error('kelompok') is-invalid @enderror" required>
                                         <option value="">-- Pilih kelompok mapel --</option>
-                                        <option value="A">Pelajaran Wajib/Umum</option>
-                                        <option value="B">Pelajaran Peminatan</option>
-                                        <option value="C">Pelajaran Lintas Minat</option>
+                                        @foreach ($kelompokMapel as $kelompok)
+                                            <option value="{{ $kelompok->id }}">
+                                                Pelajaran {{ $kelompok->nama_kelompok }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -129,4 +115,44 @@
             </div>
         </div>
     </div>
+
+    <div id="hapus-mapel" class="modal fade">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h4 class="modal-title">Konfirmasi Hapus</h4>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p>
+                        Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.
+                    </p>
+
+                    <form id="mapel-destroy" method="post">
+                        @csrf
+                        @method('delete')
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" form="mapel-destroy" class="btn btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('script')
+    <script>
+        function hapusMapel(id) {
+            const actionUrl = '{{ route('mapel.destroy', ':id') }}';
+
+            document.getElementById('mapel-destroy').action = actionUrl.replace(':id', id);
+        }
+    </script>
 @endsection

@@ -6,7 +6,6 @@ use App\Exports\GuruExport;
 use App\Guru;
 use App\Http\Controllers\Controller;
 use App\Imports\GuruImport;
-use App\Mapel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Maatwebsite\Excel\Facades\Excel;
@@ -15,16 +14,9 @@ class GuruMasterDataController extends Controller
 {
     public function index(Request $request)
     {
-        if (!$request->has('mapel')) {
-            $mapels = Mapel::all();
+        $guruList = Guru::all();
 
-            return view('master-data.guru.index-mapel', compact('mapels'));
-        }
-
-        $mapel = Mapel::with('guru')
-            ->findOrFail(Crypt::decrypt($request->mapel));
-
-        return view('master-data.guru.index', compact('mapel'));
+        return view('master-data.guru.index', compact('guruList'));
     }
 
     public function store(Request $request)

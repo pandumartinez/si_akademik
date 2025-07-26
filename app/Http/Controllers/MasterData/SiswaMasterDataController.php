@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Imports\SiswaImport;
 use App\Kelas;
 use App\KelasSiswa;
-use App\Periode;
 use App\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -18,16 +17,15 @@ class SiswaMasterDataController extends Controller
     public function index(Request $request)
     {
         if (!$request->has('kelas')) {
-            $kelas = Kelas::all();
-            $periode = Periode::aktif();
-
-            return view('master-data.siswa.index-kelas', compact('kelas', 'periode'));
+            abort(404);
         }
 
         $kelas = Kelas::with('siswa')
             ->findOrFail(Crypt::decrypt($request->kelas));
 
-        return view('master-data.siswa.index', compact('kelas'));
+        $kelasList = Kelas::all();
+
+        return view('master-data.siswa.index', compact('kelas', 'kelasList'));
     }
 
     public function store(Request $request)

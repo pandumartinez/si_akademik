@@ -11,11 +11,25 @@ class Mapel extends Model
 
     protected $guarded = [];
 
+    protected $with = ['kelompok'];
+
     public static function booted()
     {
         static::addGlobalScope('defaultSort', function (Builder $builder) {
-            $builder->orderBy('mapels.kelompok')->orderBy('nama_mapel');
+            $builder
+                ->orderBy(
+                    KelompokMapel::select('kode')
+                        ->whereColumn('kelompok_mapel.id', 'mapels.kelompok_mapel')
+                        ->latest()
+                        ->limit(1)
+                )
+                ->orderBy('nama_mapel');
         });
+    }
+
+    public function kelompok()
+    {
+        return $this->belongsTo(KelompokMapel::class, 'kelompok_mapel', 'id');
     }
 
     public function jadwal()
