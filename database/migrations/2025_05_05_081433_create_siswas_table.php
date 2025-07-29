@@ -16,7 +16,7 @@ class CreateSiswasTable extends Migration
 
             $table->string('nama_siswa');
             $table->enum('jk', ['L', 'P']);
-            $table->string('telp', 15)->nullable();
+            $table->string('telp')->nullable();
             $table->string('tmp_lahir', 50)->nullable();
             $table->date('tgl_lahir')->nullable();
             $table->string('foto');

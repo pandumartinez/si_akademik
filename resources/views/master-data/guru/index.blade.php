@@ -36,6 +36,7 @@
                             <th>No.</th>
                             <th>Nama</th>
                             <th>NIP</th>
+                            <th>Jabatan</th>
                             <th>Mata Pelajaran</th>
                             <th>Foto</th>
                             <th>Aksi</th>
@@ -47,6 +48,17 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $guru->nama_guru }}</td>
                                 <td>{{ $guru->nip }}</td>
+                                <td>
+                                    @if ($guru->jabatan->isEmpty())
+                                        -
+                                    @else
+                                        <ul>
+                                            @foreach ($guru->jabatan as $jabatan)
+                                                <li>{{ $jabatan->nama_jabatan }}</li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </td>
                                 <td>
                                     @if ($guru->mapel->isEmpty())
                                         -
@@ -61,12 +73,12 @@
                                 <td>
                                     <a href="{{ asset($guru->foto) }}" data-toggle="lightbox"
                                         data-title="Foto {{ $guru->nama_guru }}" data-gallery="gallery" data-footer='
-                                                            <a href="{{ route('guru.edit.foto', Crypt::encrypt($guru->id)) }}"
-                                                                class="btn btn-link btn-block btn-light">
-                                                                <i class="nav-icon fas fa-file-upload"></i>
-                                                                &nbsp;
-                                                                Ubah Foto
-                                                            </a>'>
+                                            <a href="{{ route('guru.edit.foto', Crypt::encrypt($guru->id)) }}"
+                                                class="btn btn-link btn-block btn-light">
+                                                <i class="nav-icon fas fa-file-upload"></i>
+                                                &nbsp;
+                                                Ubah Foto
+                                            </a>'>
                                         <img src="{{ asset($guru->foto) }}" class="img-fluid mb-2" style="height: 150px;">
                                     </a>
                                 </td>
@@ -128,6 +140,32 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="nip">NIP</label>
+
+                                    <input id="nip" type="number" name="nip"
+                                        class="form-control @error('nip') is-invalid @enderror"
+                                        placeholder="Nomor Induk Pegawai" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="tmp_lahir">Tempat Lahir</label>
+
+                                    <input id="tmp_lahir" type="text" name="tmp_lahir"
+                                        class="form-control @error('tmp_lahir') is-invalid @enderror"
+                                        placeholder="Tempat lahir">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="telp">Nomor Telepon/HP</label>
+
+                                    <input id="telp" type="tel" name="telp"
+                                        class="form-control @error('telp') is-invalid @enderror"
+                                        placeholder="+62XXXXXXXXXXX">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="jk">Jenis Kelamin</label>
 
                                     <select id="jk" name="jk" class="select2 form-control @error('jk') is-invalid @enderror"
@@ -139,11 +177,22 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="tmp_lahir">Tempat Lahir</label>
+                                    <label for="jabatan">Jabatan</label>
 
-                                    <input id="tmp_lahir" type="text" name="tmp_lahir"
-                                        class="form-control @error('tmp_lahir') is-invalid @enderror"
-                                        placeholder="Tempat lahir">
+                                    <select id="jabatan" name="jabatan[]" multiple="multiple"
+                                        class="select2 form-control @error('jabatan') is-invalid @enderror">
+                                        <option value="">-- Pilih jabatan --</option>
+                                        @foreach ($jabatanList as $jabatan)
+                                            <option value="{{ $jabatan->id }}">{{ $jabatan->nama_jabatan }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="tgl_lahir">Tanggal Lahir</label>
+
+                                    <input id="tgl_lahir" type="date" name="tgl_lahir"
+                                        class="form-control @error('tgl_lahir') is-invalid @enderror">
                                 </div>
 
                                 <div class="form-group">
@@ -157,31 +206,6 @@
                                             <label class="custom-file-label" for="foto">Choose file</label>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="nip">NIP</label>
-
-                                    <input id="nip" type="number" name="nip"
-                                        class="form-control @error('nip') is-invalid @enderror"
-                                        placeholder="Nomor Induk Pegawai" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="telp">Nomor Telepon/HP</label>
-
-                                    <input id="telp" type="tel" name="telp"
-                                        class="form-control @error('telp') is-invalid @enderror"
-                                        placeholder="+62XXXXXXXXXXX">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="tgl_lahir">Tanggal Lahir</label>
-
-                                    <input id="tgl_lahir" type="date" name="tgl_lahir"
-                                        class="form-control @error('tgl_lahir') is-invalid @enderror">
                                 </div>
                             </div>
                         </div>

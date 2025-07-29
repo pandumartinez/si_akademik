@@ -32,10 +32,23 @@
                             <dt class="col-sm-4">Nomor Induk Pegawai (NIP)</dt>
                             <dd class="col-sm-8">{{ $guru->nip }}</dd>
 
+                            <dt class="col-sm-4">Jabatan</dt>
+                            <dd class="col-sm-8">
+                                <ul>
+                                    @foreach ($guru->jabatan as $jabatan)
+                                        <li>{{ $jabatan->nama_jabatan}}</li>
+                                    @endforeach
+                                </ul>
+                            </dd>
+
                             <dt class="col-sm-4">Mata Pelajaran</dt>
-                            @foreach ($guru->mapel as $mapel)
-                                <dd class="col-sm-8">{{ $mapel->nama_mapel }}</dd>
-                            @endforeach
+                            <dd class="col-sm-8">
+                                <ul>
+                                    @foreach ($guru->mapel as $mapel)
+                                        <li>{{ $mapel->nama_mapel }}</li>
+                                    @endforeach
+                                </ul>
+                            </dd>
 
                             <dt class="col-sm-4">Jenis Kelamin</dt>
                             <dd class="col-sm-8">

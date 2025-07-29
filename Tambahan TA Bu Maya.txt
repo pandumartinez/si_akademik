@@ -3,7 +3,7 @@ Tambahan TA Bu Maya
 
 [x] 2. data guru harusnya langsung nampil nama guru bukan mapel dulu, isinya jadi nama guru + mapelnya apa
 
-[ ] 3. tambah master tabel jabatan untuk guru, isinya kepsek, wakil kepsek, wali kelas 10a, wali kelas 10b
+[x] 3. tambah master tabel jabatan untuk guru, isinya kepsek, wakil kepsek, wali kelas 10a, wali kelas 10b
 
 [x] 4. data siswa & data jadwal ga perlu ada karena sudah masuk di data kelas
 

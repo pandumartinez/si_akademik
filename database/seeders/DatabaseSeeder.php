@@ -38,6 +38,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(MapelSeeder::class);
 
+        $this->call(JabatanSeeder::class);
+
         $this->call(GuruSeeder::class);
 
         $this->call(KelasSeeder::class);

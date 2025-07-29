@@ -37,5 +37,12 @@ class GuruSeeder extends Seeder
                 }
             }
         }
+
+        // Jabatan guru
+        $jabatanId = [1, 2, 3, 4, 5]; // Jabatan struktural
+
+        foreach ($guruList->random(sizeof($jabatanId)) as $index => $guru) {
+            $guru->jabatan()->attach($jabatanId[$index]);
+        }
     }
 }

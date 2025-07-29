@@ -31,6 +31,11 @@ class Guru extends Model
         return $this->absenHariIni()->first();
     }
 
+    public function jabatan()
+    {
+        return $this->belongsToMany('App\Jabatan', 'jabatan_guru');
+    }
+
     public function user()
     {
         return $this->hasOne('App\User', 'nip', 'nip');

@@ -28,6 +28,10 @@ class KelasSeeder extends Seeder
                 'nama_kelas' => $nama_kelas,
                 'wali_kelas' => $guruList[$index]->id,
             ]);
+
+            $guruList[$index]->jabatan()->attach(
+                8 // Wali Kelas
+            );
         }
     }
 }

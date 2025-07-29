@@ -6,27 +6,23 @@ use App\Exports\GuruExport;
 use App\Guru;
 use App\Http\Controllers\Controller;
 use App\Imports\GuruImport;
-use App\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Maatwebsite\Excel\Facades\Excel;
 
-class GuruMasterDataController extends Controller
+class JabatanMasterDataController extends Controller
 {
     public function index(Request $request)
     {
-        $guruList = Guru::with(['jabatan', 'mapel'])->get();
-        $jabatanList = Jabatan::all();
+        $guruList = Guru::all();
 
-        return view('master-data.guru.index', compact('guruList', 'jabatanList'));
+        return view('master-data.guru.index', compact('guruList'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nip' => 'required',
-            'jabatan' => 'nullable|array',
-            'jabatan.*' => 'integer|exists:App\Jabatan,id',
             'nama_guru' => 'required',
             'jk' => 'required',
         ]);
@@ -43,7 +39,7 @@ class GuruMasterDataController extends Controller
                 : 'uploads/guru/23171022042020_female.jpg';
         }
 
-        $guru = Guru::create([
+        Guru::create([
             'nip' => $request->nip,
             'nama_guru' => $request->nama_guru,
             'jk' => $request->jk,
@@ -53,15 +49,14 @@ class GuruMasterDataController extends Controller
             'foto' => $foto,
         ]);
 
-        $guru->jabatan()->attach($request->jabatan);
-
         return redirect()->back()
             ->with('success', 'Data guru berhasil ditambahkan!');
     }
 
     public function show($id)
     {
-        $guru = Guru::findOrFail(Crypt::decrypt($id));
+        $guru = Guru::with('mapel')
+            ->findOrFail(Crypt::decrypt($id));
 
         return view('master-data.guru.show', compact('guru'));
     }
@@ -69,18 +64,15 @@ class GuruMasterDataController extends Controller
     public function edit($id, Request $request)
     {
         $guru = Guru::findOrFail(Crypt::decrypt($id));
-        $jabatanList = Jabatan::all();
 
         $request->session()->put('guru_index_url', url()->previous());
 
-        return view('master-data.guru.edit', compact('guru', 'jabatanList'));
+        return view('master-data.guru.edit', compact('guru'));
     }
 
     public function update(Guru $guru, Request $request)
     {
         $request->validate([
-            'jabatan' => 'nullable|array',
-            'jabatan.*' => 'integer|exists:App\Jabatan,id',
             'nama_guru' => 'required',
             'jk' => 'required',
         ]);
@@ -92,8 +84,6 @@ class GuruMasterDataController extends Controller
             'tmp_lahir' => $request->tmp_lahir,
             'tgl_lahir' => $request->tgl_lahir,
         ]);
-
-        $guru->jabatan()->sync($request->jabatan);
 
         $redirectUrl = $request->session()->get('guru_index_url', url()->previous());
 

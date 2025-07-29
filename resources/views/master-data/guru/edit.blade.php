@@ -26,28 +26,36 @@
 
                                 <input id="nama_guru" type="text" name="nama_guru"
                                     class="form-control @error('nama_guru') is-invalid @enderror"
-                                    placeholder="Nama lengkap guru"
-                                    value="{{ $guru->nama_guru }}"
-                                    required>
+                                    placeholder="Nama lengkap guru" value="{{ $guru->nama_guru }}" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="jk">Jenis Kelamin</label>
 
-                                <select id="jk" name="jk"
-                                    class="select2 form-control @error('jk') is-invalid @enderror"
+                                <select id="jk" name="jk" class="select2 form-control @error('jk') is-invalid @enderror"
                                     required>
                                     <option value="">-- Pilih Jenis Kelamin --</option>
-                                    <option
-                                        @if ($guru->jk == 'L') selected @endif
-                                        value="L">
+                                    <option @if ($guru->jk == 'L') selected @endif value="L">
                                         Laki-Laki
                                     </option>
-                                    <option
-                                        @if ($guru->jk == 'P') selected @endif
-                                        value="P">
+                                    <option @if ($guru->jk == 'P') selected @endif value="P">
                                         Perempuan
                                     </option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jabatan">Jabatan</label>
+
+                                <select id="jabatan" name="jabatan[]" multiple="multiple"
+                                    class="select2 form-control @error('jabatan') is-invalid @enderror">
+                                    <option value="">-- Pilih jabatan --</option>
+                                    @foreach ($jabatanList as $jabatan)
+                                        <option value="{{ $jabatan->id }}" @if ($guru->jabatan->contains($jabatan)) selected
+                                        @endif>
+                                            {{ $jabatan->nama_jabatan }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -55,8 +63,7 @@
                                 <label for="tmp_lahir">Tempat Lahir</label>
 
                                 <input id="tmp_lahir" type="text" name="tmp_lahir"
-                                    class="form-control @error('tmp_lahir') is-invalid @enderror"
-                                    placeholder="Tempat lahir"
+                                    class="form-control @error('tmp_lahir') is-invalid @enderror" placeholder="Tempat lahir"
                                     value="{{ $guru->tmp_lahir }}">
                             </div>
                         </div>
@@ -65,18 +72,14 @@
                             <div class="form-group">
                                 <label for="nip">NIP</label>
 
-                                <input id="nip" type="text"
-                                    class="form-control"
-                                    value="{{ $guru->nip }}"
-                                    readonly>
+                                <input id="nip" type="text" class="form-control" value="{{ $guru->nip }}" readonly>
                             </div>
 
                             <div class="form-group">
                                 <label for="telp">Nomor Telepon/HP</label>
 
                                 <input id="telp" type="tel" name="telp"
-                                    class="form-control @error('telp') is-invalid @enderror"
-                                    placeholder="+62XXXXXXXXXXX"
+                                    class="form-control @error('telp') is-invalid @enderror" placeholder="+62XXXXXXXXXXX"
                                     value="{{ $guru->telp }}">
                             </div>
 

@@ -14,6 +14,8 @@ class JadwalSeeder extends Seeder
     {
         $guruMapel = $this->tetapkanGuruKeMapel();
 
+        dump($guruMapel);
+
         foreach (Kelas::all() as $kelas) {
             $daftarMapelKelas = generateDaftarMapelKelas($kelas);
 
@@ -39,6 +41,12 @@ class JadwalSeeder extends Seeder
                     }
                 }
             }
+        }
+
+        foreach ($guruMapel as $guruId) {
+            Guru::find($guruId)->jabatan()->attach(
+                6 // Guru Mata Pelajaran
+            );
         }
     }
 
