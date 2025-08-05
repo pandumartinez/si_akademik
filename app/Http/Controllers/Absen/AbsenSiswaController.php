@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Absen;
 use App\AbsenSiswa;
 use App\Kelas;
 use App\Http\Controllers\Controller;
+use App\Pengaturan;
 
 use Illuminate\Http\Request;
 
@@ -31,7 +32,10 @@ class AbsenSiswaController extends Controller
             ])
                 ->firstWhere('nama_kelas', '=', $request->kelas);
 
-            $data = compact('kelasList', 'tanggal', 'kelas');
+            $daftarBuka = Pengaturan::getValue('daftar_buka_absen_siswa') ?? [];
+            $absenDibuka = in_array($kelas->id, $daftarBuka);
+
+            $data = compact('kelasList', 'tanggal', 'kelas', 'absenDibuka');
         } else {
             $kelas = $user->guru->kelasWali()->with([
                 'siswa',
@@ -65,5 +69,28 @@ class AbsenSiswaController extends Controller
             );
 
         return response()->json();
+    }
+
+    public function buka(Request $request)
+    {
+        $request->validate([
+            'buka' => 'required|boolean',
+            'kelas_id' => 'required|exists:App\Kelas,id',
+        ]);
+
+        $daftarBuka = Pengaturan::getValue('daftar_buka_absen_siswa') ?? [];
+
+        if ($request->boolean('buka')) {
+            array_push($daftarBuka, (int) $request->kelas_id);
+        } else {
+            $daftarBuka = array_values(array_diff($daftarBuka, [(int) $request->kelas_id]));
+        }
+
+        Pengaturan::updateOrCreate(
+            ['key' => 'daftar_buka_absen_siswa'],
+            ['value' => json_encode($daftarBuka)],
+        );
+
+        return redirect()->back();
     }
 }

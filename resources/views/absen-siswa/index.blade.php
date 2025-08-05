@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+    $canAbsen = isset($kelas) && auth()->user()->can('absen', $kelas);
+@endphp
+
 @section('heading')
     @if (auth()->user()->role === 'admin')
         @if (isset($kelas))
@@ -38,6 +42,14 @@
 @section('content')
     <form id="form-search" method="get" action="{{ route('absen-siswa.index') }}"></form>
 
+    @if (auth()->user()->role === 'admin' && isset($kelas))
+        <form id="form-buka-absen" method="post" action="{{ route('absen-siswa.buka') }}">
+            @csrf
+            <input type="hidden" name="buka" value="{{ $absenDibuka ? '0' : '1' }}">
+            <input type="hidden" name="kelas_id" value="{{ $kelas->id }}">
+        </form>
+    @endif
+
     <div class="col-md-12">
         <div class="card">
             @if (auth()->user()->role === 'admin')
@@ -71,6 +83,16 @@
                                     value="{{ $tanggal }}">
                             </div>
                         </div>
+
+                        @if (isset($kelas) && date('H:i') >= '08:00')
+                            <div class="col-md-7 d-flex align-items-center justify-content-end">
+                                <button form="form-buka-absen" type="submit" class="btn btn-{{ $absenDibuka ? 'danger' : 'secondary' }}">
+                                    <i class="nav-icon fas fa-{{ $absenDibuka ? 'lock' : 'lock-open' }}"></i>
+                                    &nbsp;
+                                    {{ $absenDibuka ? 'Tutup' : 'Buka' }} Absen
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </div>
             @endif
@@ -150,21 +172,21 @@
                                             <td class="absen">
                                                 <input form="{{ $loop->iteration }}-form-absen" type="radio"
                                                     class="absen" name="keterangan" value="izin"
-                                                    @if (auth()->user()->role === 'admin') disabled @endif
+                                                    @if (!$canAbsen) disabled @endif
                                                     @if ($kehadiran === 'izin') checked @endif>
                                             </td>
 
                                             <td class="absen">
                                                 <input form="{{ $loop->iteration }}-form-absen" type="radio"
                                                     class="absen" name="keterangan" value="sakit"
-                                                    @if (auth()->user()->role === 'admin') disabled @endif
+                                                    @if (!$canAbsen) disabled @endif
                                                     @if ($kehadiran === 'sakit') checked @endif>
                                             </td>
 
                                             <td class="absen">
                                                 <input form="{{ $loop->iteration }}-form-absen" type="radio"
                                                     class="absen" name="keterangan" value="tanpa keterangan"
-                                                    @if (auth()->user()->role === 'admin') disabled @endif
+                                                    @if (!$canAbsen) disabled @endif
                                                     @if ($kehadiran === 'tanpa keterangan') checked @endif>
                                             </td>
                                         </tr>
@@ -179,7 +201,7 @@
     </div>
 @endsection
 
-@if (auth()->user()->role === 'guru' && Auth::user()->guru->kelasWali)
+@if ($canAbsen)
     @section('script')
         <script>
             function saveAbsen(radio) {

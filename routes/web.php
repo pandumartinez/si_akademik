@@ -58,6 +58,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('absen-siswa', 'Absen\AbsenSiswaController')
         ->only(['index', 'store']);
 
+    Route::post('absen-siswa/buka', 'Absen\AbsenSiswaController@buka')
+        ->name('absen-siswa.buka');
+
     // Admin routes
     Route::middleware('admin')->group(function () {
         // Dashboard

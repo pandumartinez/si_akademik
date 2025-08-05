@@ -17,7 +17,7 @@ class Pengaturan extends Model
         if (!$pengaturan)
             return null;
 
-        if ($key === 'predikat')
+        if (in_array($key, ['predikat', 'daftar_buka_absen_siswa']))
             return json_decode($pengaturan->value);
 
         return $pengaturan->value;
