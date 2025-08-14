@@ -7,9 +7,9 @@ Tambahan TA Bu Maya
 
 [x] 4. data siswa & data jadwal ga perlu ada karena sudah masuk di data kelas
 
-[ ] 5. absen guru (guru) cuma bisa check in & check out + lokasi untuk memastikan guru hadir, ditambah guru bisa melihat riwayat absen sendiri
+[-] 5. absen guru (guru) cuma bisa check in & check out + lokasi untuk memastikan guru hadir, ditambah guru bisa melihat riwayat absen sendiri
 
-[ ] 6. absen guru (admin) bisa melihat absen semua guru & bisa absenkan guru yang sakit/ijin/bertugas keluar
+[x] 6. absen guru (admin) bisa melihat absen semua guru & admin bisa absenkan guru yang sakit/ijin/bertugas keluar
 
 [x] 7. absen siswa hanya di buka oleh admin dari jam 7 sampai jam 8 lalu ditutup, kalo misal jam 12 ada siswa yang izin pulang, maka admin bisa membukakan absen siswa terus diupdate lagi oleh guru, lalu admin menutup kembali
 

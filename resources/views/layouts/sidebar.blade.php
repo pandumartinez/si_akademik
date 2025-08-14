@@ -43,12 +43,8 @@
                 @endif
                 --}}
 
-                @if ($role === 'admin')
-                    <x-nav.item label="Absensi Guru" icon="fas fa-calendar-check" route="absensi-guru"
-                        pattern="absensi-guru" />
-                @elseif ($role === 'guru')
-                    <x-nav.item label="Absen" icon="fas fa-calendar-check" route="absen-guru.create" pattern="absen-guru" />
-                @endif
+                <x-nav.item label="{{ $role === 'admin' ? 'Absensi Guru' : 'Absen' }}" icon="fas fa-calendar-check"
+                    route="absen-guru.index" pattern="absen-guru" />
 
                 @if ($role === 'admin' || ($role === 'guru' && $user->guru->kelasWali))
                     <x-nav.item label="Absen Siswa" icon="fas fa-clipboard" route="absen-siswa.index"

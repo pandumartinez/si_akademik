@@ -55,11 +55,16 @@ Route::middleware('auth')->group(function () {
     Route::resource('deskripsi-predikat', 'Rapot\DeskripsiPredikatController')
         ->only(['index', 'store']);
 
+    // Absen siswa
     Route::resource('absen-siswa', 'Absen\AbsenSiswaController')
         ->only(['index', 'store']);
 
     Route::post('absen-siswa/buka', 'Absen\AbsenSiswaController@buka')
         ->name('absen-siswa.buka');
+
+    // Absen guru
+    Route::resource('absen-guru', 'Absen\AbsenGuruController')
+        ->only(['index', 'store']);
 
     // Admin routes
     Route::middleware('admin')->group(function () {
@@ -74,15 +79,6 @@ Route::middleware('auth')->group(function () {
         // Pengumuman
         Route::resource('pengumuman', 'PengumumanController')
             ->only(['index', 'store']);
-
-        Route::get('absensi-guru', 'Absen\AbsenGuruController@index')
-            ->name('absensi-guru');
-    });
-
-    // Guru routes
-    Route::middleware('guru')->group(function () {
-        Route::resource('absen-guru', 'Absen\AbsenGuruController')
-            ->only(['create', 'store']);
     });
 });
 
