@@ -120,7 +120,7 @@
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'id',
-                firstDay: 1,
+                firstDay: 0,
                 slotMinTime: '06:00',
                 slotMaxTime: '19:00',
                 initialView: 'timeGridDay',

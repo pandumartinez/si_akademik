@@ -39,7 +39,7 @@
 
                 @if (!$absenHariIni || in_array($absenHariIni->keterangan, ['hadir', 'terlambat']))
                     <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">
+                        <button id="button-absen" type="submit" class="btn btn-primary" disabled>
                             <i class="nav-icon fas fa-save"></i>
                             &nbsp;
                             @if (!$absenHariIni)
@@ -69,7 +69,7 @@
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'id',
-                firstDay: 1,
+                firstDay: 0,
                 slotMinTime: '06:00',
                 slotMaxTime: '19:00',
                 initialView: 'timeGridDay',
@@ -83,6 +83,56 @@
             });
 
             calendar.render();
+
+            if ("geolocation" in navigator) {
+                const options = {
+                    enableHighAccuracy: true,
+                    maximumAge: 30000, // cache
+                };
+
+                function success(position) {
+                    $('#button-absen').text('Hadir');
+
+                    $.ajax({
+                        type: 'post',
+                        url: '{{ route('cek-lokasi') }}',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        dataType: 'json',
+                        data: {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude,
+                        },
+                        success: function (data) {
+                            if (data.success) {
+                                $('#button-absen').prop('disabled', false);
+                            } else {
+                                toastr.error(data.message);
+                            }
+                        },
+                        error: function (error) {
+                            toastr.error('Tidak dapat melakukan verifikasi pada data lokasi anda.');
+                        },
+                    });
+                }
+
+                function error(error) {
+                    $('#button-absen').text('Hadir');
+
+                    let message = '';
+                    if (error.core === 1) {
+                        message = ' Akses lokasi tidak diizinkan.';
+                    }
+                    toastr.error('Tidak dapat mendapatkan lokasi GPS anda.' + message);
+                }
+
+                $('#button-absen').text('Mendapatkan lokasi...');
+
+                navigator.geolocation.getCurrentPosition(success, error, options);
+            } else {
+                toastr.error('Fitur lokasi GPS tidak tersedia di perangkat anda.');
+            }
         })
     </script>
 @endsection

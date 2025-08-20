@@ -66,6 +66,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('absen-guru', 'Absen\AbsenGuruController')
         ->only(['index', 'store']);
 
+    Route::post('cek-lokasi', 'Absen\AbsenGuruController@cekLokasi')
+        ->name('cek-lokasi');
+
     // Admin routes
     Route::middleware('admin')->group(function () {
         // Dashboard

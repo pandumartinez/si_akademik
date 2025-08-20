@@ -45,21 +45,22 @@ class AbsenGuruController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(
-                        fn($absen) => in_array($absen->keterangan, ['sakit', 'izin', 'bertugas keluar'])
-                        ? [
-                            'title' => ucwords($absen->keterangan),
-                            'allDay' => true,
-                            'start' => $absen->created_at->toIso8601String(),
-                            'backgroundColor' => '#f56954',
-                            'borderColor' => '#f56954',
-                        ] : [
-                            'title' => ucwords($absen->keterangan),
-                            'allDay' => false,
-                            'start' => $absen->created_at->toIso8601String(),
-                            'backgroundColor' => '#0073b7',
-                            'borderColor' => '#0073b7',
-                        ]
-                    );;
+                    fn($absen) => in_array($absen->keterangan, ['sakit', 'izin', 'bertugas keluar'])
+                    ? [
+                        'title' => ucwords($absen->keterangan),
+                        'allDay' => true,
+                        'start' => $absen->created_at->toIso8601String(),
+                        'backgroundColor' => '#f56954',
+                        'borderColor' => '#f56954',
+                    ] : [
+                        'title' => ucwords($absen->keterangan),
+                        'allDay' => false,
+                        'start' => $absen->created_at->toIso8601String(),
+                        'backgroundColor' => '#0073b7',
+                        'borderColor' => '#0073b7',
+                    ]
+                );
+            ;
 
             $absenHariIni = $request->user()->guru->absenHariIni()
                 ->orderBy('created_at', 'desc')
@@ -114,5 +115,51 @@ class AbsenGuruController extends Controller
             return redirect()->back()
                 ->with('success', "Berhasil absen dengan keterangan: $keterangan");
         }
+    }
+
+    public function cekLokasi(Request $request)
+    {
+        $request->validate([
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180'
+        ]);
+
+        // School coordinates (you should store these in config or env)
+        $schoolLat = -7.236157842015011;
+        $schoolLong = 112.75782219820323;
+        $allowedRadius = 12.1; // Radius in kilometers
+
+        $distance = $this->calculateDistance(
+            $request->latitude,
+            $request->longitude,
+            $schoolLat,
+            $schoolLong
+        );
+
+        $isInRange = $distance <= $allowedRadius;
+
+        return response()->json([
+            'success' => $isInRange,
+            'message' => $isInRange
+                ? 'Location is within allowed range'
+                : ('Location is outside allowed range: ' . round($distance, 2) . ' km'),
+        ]);
+    }
+
+    // Haversine formula
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371; // Earth's radius in kilometers
+
+        $latDelta = deg2rad($lat2 - $lat1);
+        $lonDelta = deg2rad($lon2 - $lon1);
+
+        $a = sin($latDelta / 2) * sin($latDelta / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($lonDelta / 2) * sin($lonDelta / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }

@@ -7,7 +7,7 @@ Tambahan TA Bu Maya
 
 [x] 4. data siswa & data jadwal ga perlu ada karena sudah masuk di data kelas
 
-[-] 5. absen guru (guru) cuma bisa check in & check out + lokasi untuk memastikan guru hadir, ditambah guru bisa melihat riwayat absen sendiri
+[x] 5. absen guru (guru) cuma bisa check in & check out + lokasi untuk memastikan guru hadir, ditambah guru bisa melihat riwayat absen sendiri
 
 [x] 6. absen guru (admin) bisa melihat absen semua guru & admin bisa absenkan guru yang sakit/ijin/bertugas keluar
 
