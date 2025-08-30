@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rapot;
 use App\Pengaturan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class PredikatController extends Controller
 {
@@ -12,7 +13,10 @@ class PredikatController extends Controller
     {
         $predikat = Pengaturan::getValue('predikat');
 
-        return view('predikat.index', compact('predikat'));
+        $activities = Activity::where('subject_type', 'App\\Pengaturan')->get();
+        $activities = $activities->filter(fn($x) => $x->subject->key === 'predikat');
+
+        return view('predikat.index', compact('predikat', 'activities'));
     }
 
     public function store(Request $request)

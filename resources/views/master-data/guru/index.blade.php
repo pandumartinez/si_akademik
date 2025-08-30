@@ -7,6 +7,8 @@
 @endsection
 
 @section('content')
+    <form id="form-search" method="get" action="{{ route('guru.index') }}"></form>
+
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
@@ -27,6 +29,20 @@
                     &nbsp;
                     Export Excel
                 </a>
+
+                <a href="{{ Route('jabatan.index') }}" type="button" class="btn btn-primary btn-sm">
+                    Lihat Data Jabatan
+                </a>
+
+                <div>
+                    <div class="icheck-primary">
+                        <input form="form-search" id="tampilkan-deleted" type="checkbox" name="show-all"
+                            onChange="this.form.submit()"
+                            @checked(request()->boolean('show-all'))>
+
+                        <label for="tampilkan-deleted">Tampilkan deleted</label>
+                    </div>
+                </div>
             </div>
 
             <div class="card-body">

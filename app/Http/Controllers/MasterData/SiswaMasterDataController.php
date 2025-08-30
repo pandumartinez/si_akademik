@@ -71,7 +71,7 @@ class SiswaMasterDataController extends Controller
 
     public function show($id)
     {
-        $siswa = Siswa::with('kelas')->findOrFail(Crypt::decrypt($id));
+        $siswa = Siswa::withTrashed()->with('kelas')->findOrFail(Crypt::decrypt($id));
 
         return view('master-data.siswa.show', compact('siswa'));
     }

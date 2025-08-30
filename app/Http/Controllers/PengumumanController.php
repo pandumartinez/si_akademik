@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Pengaturan;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class PengumumanController extends Controller
 {
@@ -12,7 +13,10 @@ class PengumumanController extends Controller
     {
         $pengumuman = Pengaturan::getValue('pengumuman');
 
-        return view('pengumuman.index', compact('pengumuman'));
+        $activities = Activity::where('subject_type', 'App\\Pengaturan')->get();
+        $activities = $activities->filter(fn($x) => $x->subject->key === 'pengumuman');
+
+        return view('pengumuman.index', compact('pengumuman', 'activities'));
     }
 
     public function store(Request $request)

@@ -4,9 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Periode extends Model
 {
+    use LogsActivity;
+    
     protected $table = 'periode';
 
     protected $guarded = [];
@@ -54,5 +58,11 @@ class Periode extends Model
     public static function aktif()
     {
         return Periode::where('aktif', '=', true)->first();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded();
     }
 }

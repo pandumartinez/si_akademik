@@ -27,11 +27,11 @@
                 @if ($role === 'admin')
                     <x-nav.group icon="fa-edit" label="Master Data" :patterns="['master-data/*']">
 
-                        <x-nav.item label="Data Mapel" route="mapel.index" pattern="master-data/mapel*" />
+                        <x-nav.item label="Data Mapel" route="mapel.index" :pattern="['master-data/mapel*','master-data/kelompok-mapel*']" />
 
-                        <x-nav.item label="Data Guru" route="guru.index" pattern="master-data/guru*" />
+                        <x-nav.item label="Data Guru" route="guru.index" :pattern="['master-data/guru*','master-data/jabatan*']" />
 
-                        <x-nav.item label="Data Kelas" route="kelas.index" pattern="master-data/kelas*" />
+                        <x-nav.item label="Data Kelas" route="kelas.index" :pattern="['master-data/kelas*', 'master-data/siswa*', 'master-data/jadwal*']" />
 
                         <x-nav.item label="Data User" route="user.index" pattern="master-data/user*" />
                     </x-nav.group>

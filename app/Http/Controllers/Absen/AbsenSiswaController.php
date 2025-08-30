@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Pengaturan;
 
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class AbsenSiswaController extends Controller
 {
@@ -15,13 +16,16 @@ class AbsenSiswaController extends Controller
     {
         $user = auth()->user();
 
+        $activities = Activity::where('subject_type', 'App\\AbsenSiswa')->get();
+
+
         if ($user->role === 'admin') {
             $kelasList = Kelas::all();
 
             $tanggal = $request->tanggal ?? date('Y-m-d');
 
             if (!$request->has('kelas')) {
-                return view('absen-siswa.index', compact('kelasList', 'tanggal'));
+                return view('absen-siswa.index', compact('kelasList', 'tanggal', 'activities'));
             }
 
             $kelas = Kelas::with([
@@ -35,7 +39,7 @@ class AbsenSiswaController extends Controller
             $daftarBuka = Pengaturan::getValue('daftar_buka_absen_siswa') ?? [];
             $absenDibuka = in_array($kelas->id, $daftarBuka);
 
-            $data = compact('kelasList', 'tanggal', 'kelas', 'absenDibuka');
+            $data = compact('kelasList', 'tanggal', 'kelas', 'absenDibuka', 'activities');
         } else {
             $kelas = $user->guru->kelasWali()->with([
                 'siswa',
@@ -45,7 +49,7 @@ class AbsenSiswaController extends Controller
             ])
                 ->first();
 
-            $data = compact('kelas');
+            $data = compact('kelas','activities');
         }
 
         $data['jumlah'] = $kelas->siswa->countBy(

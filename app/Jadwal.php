@@ -4,9 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Jadwal extends Model
 {
+    use LogsActivity;
+    
     protected $table = 'jadwals';
 
     protected $guarded = [];
@@ -38,5 +42,11 @@ class Jadwal extends Model
     public function guru()
     {
         return $this->belongsTo('App\Guru');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded();
     }
 }

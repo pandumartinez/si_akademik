@@ -4,9 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class KelasSiswa extends Model
 {
+    use LogsActivity;
+    
     protected $table = 'kelas_siswa';
 
     protected $guarded = [];
@@ -22,5 +26,11 @@ class KelasSiswa extends Model
         static::addGlobalScope('aktif', function (Builder $builder) {
             $builder->where('kelas_siswa.periode_id', '=', Periode::id());
         });
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded();
     }
 }

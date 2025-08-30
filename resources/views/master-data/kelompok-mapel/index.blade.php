@@ -1,24 +1,27 @@
 @extends('layouts.app')
 
-@section('heading', 'Data Mapel')
+@section('heading', 'Data Kelompok Mapel')
 
 @section('breadcrumbs')
-    <li class="breadcrumb-item active">Data Mapel</li>
+    <li class="breadcrumb-item active">Data Kelompok Mapel</li>
 @endsection
 
 @section('content')
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah-mapel">
+                <a href="{{ route('mapel.index') }}" class="btn btn-default btn-sm">
+                    <i class="nav-icon fas fa-arrow-left"></i>
+                    &nbsp;
+                    Kembali
+                </a>
+
+                <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                    data-target="#tambah-kelompok-mapel">
                     <i class="nav-icon fas fa-folder-plus"></i>
                     &nbsp;
-                    Tambah Data Mapel
+                    Tambah Kelompok Mapel
                 </button>
-
-                <a href="{{ Route('kelompok-mapel.index') }}" type="button" class="btn btn-primary btn-sm">
-                    Lihat Kelompok Mapel
-                </a>
             </div>
 
             <div class="card-body">
@@ -26,27 +29,27 @@
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th>Nama Mapel</th>
-                            <th>Kelompok</th>
+                            <th>Kode Kelompok</th>
+                            <th>Nama Kelompok</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($mapels as $mapel)
+                        @foreach ($kelompokMapel as $kelompok)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $mapel->nama_mapel }}</td>
-                                <td>{{ $mapel->kelompok->kode }} ({{ $mapel->kelompok->nama_kelompok }})</td>
+                                <td>{{ $kelompok->kode  }}</td>
+                                <td>{{ $kelompok->nama_kelompok }}</td>
                                 <td>
-                                    <a href="{{ route('mapel.edit', Crypt::encrypt($mapel->id)) }}"
+                                    <a href="{{ route('kelompok-mapel.edit', Crypt::encrypt($kelompok->id)) }}"
                                         class="btn btn-success btn-sm">
                                         <i class="nav-icon fas fa-edit"></i>
                                         &nbsp;
                                         Edit
                                     </a>
 
-                                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapus-mapel"
-                                        onclick="hapusMapel('{{ $mapel->id }}')">
+                                    <button class="btn btn-danger btn-sm" data-toggle="modal"
+                                        data-target="#hapus-kelompok-mapel" onclick="hapusKelompokMapel('{{ $kelompok->id }}')">
                                         <i class="nav-icon fas fa-trash-alt"></i>
                                         &nbsp;
                                         Hapus
@@ -75,9 +78,10 @@
                     </thead>
                     <tbody>
                         @foreach ($activities as $log)
-                            <tr data-toggle="collapse" data-target="#log-detail-{{ $loop->iteration }}" style="cursor: pointer;">
+                            <tr data-toggle="collapse" data-target="#log-detail-{{ $loop->iteration }}"
+                                style="cursor: pointer;">
                                 <td>{{ $log->created_at }}</td>
-                                <td>{{ $log->subject->nama_mapel ?? 'null' }}</td>
+                                <td>{{ $log->subject->nama_kelompok ?? 'null' }}</td>
                                 <td>{{ $log->description }}</td>
                                 <td>{{ $log->causer->name }}</td>
                             </tr>
@@ -96,43 +100,37 @@
         </div>
     </div>
 
-    <div id="tambah-mapel" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="tambah-kelompok-mapel" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tambah Data Mapel</h4>
+                    <h4 class="modal-title">Tambah Kelompok Mapel</h4>
 
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
 
-                <form method="post" action="{{ route('mapel.store') }}">
+                <form method="post" action="{{ route('kelompok-mapel.store') }}">
                     @csrf
 
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="nama_mapel">Nama Mapel</label>
+                                    <label for="kode_kelompok">Kode Kelompok</label>
 
-                                    <input id="nama_mapel" type="text" name="nama_mapel"
-                                        class="form-control @error('nama_mapel') is-invalid @enderror"
-                                        placeholder="Nama mata pelajaran" required>
+                                    <input id="kode_kelompok" type="text" name="kode_kelompok"
+                                        class="form-control @error('kode_kelompok') is-invalid @enderror"
+                                        placeholder="Kode kelompok mapel" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="kelompok">Kelompok</label>
+                                    <label for="nama_kelompok">Nama Kelompok</label>
 
-                                    <select id="kelompok_mapel" name="kelompok_mapel"
-                                        class="select2 form-control @error('kelompok_mapel') is-invalid @enderror" required>
-                                        <option value="">-- Pilih kelompok mapel --</option>
-                                        @foreach ($kelompokMapel as $kelompok)
-                                            <option value="{{ $kelompok->id }}">
-                                                Pelajaran {{ $kelompok->nama_kelompok }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <input id="nama_kelompok" type="text" name="nama_kelompok"
+                                        class="form-control @error('nama_kelompok') is-invalid @enderror"
+                                        placeholder="Nama kelompok mapel" required>
                                 </div>
                             </div>
                         </div>
@@ -156,7 +154,7 @@
         </div>
     </div>
 
-    <div id="hapus-mapel" class="modal fade">
+    <div id="hapus-kelompok-mapel" class="modal fade">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-danger">
@@ -172,7 +170,7 @@
                         Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.
                     </p>
 
-                    <form id="mapel-destroy" method="post">
+                    <form id="kelompok-mapel-destroy" method="post">
                         @csrf
                         @method('delete')
                     </form>
@@ -180,7 +178,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" form="mapel-destroy" class="btn btn-danger">Delete</button>
+                    <button type="submit" form="kelompok-mapel-destroy" class="btn btn-danger">Delete</button>
                 </div>
             </div>
         </div>
@@ -189,10 +187,10 @@
 
 @section('script')
     <script>
-        function hapusMapel(id) {
-            const actionUrl = '{{ route('mapel.destroy', ':id') }}';
+        function hapusKelompokMapel(id) {
+            const actionUrl = '{{ route('kelompok-mapel.destroy', ':id') }}';
 
-            document.getElementById('mapel-destroy').action = actionUrl.replace(':id', id);
+            document.getElementById('kelompok-mapel-destroy').action = actionUrl.replace(':id', id);
         }
     </script>
 @endsection

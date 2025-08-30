@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Pengaturan extends Model
 {
+    use LogsActivity;
+
     protected $table = 'pengaturan';
 
     protected $guarded = [];
@@ -21,5 +25,11 @@ class Pengaturan extends Model
             return json_decode($pengaturan->value);
 
         return $pengaturan->value;
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded();
     }
 }

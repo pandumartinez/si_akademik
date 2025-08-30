@@ -72,7 +72,7 @@
                 firstDay: 0,
                 slotMinTime: '06:00',
                 slotMaxTime: '19:00',
-                initialView: 'timeGridDay',
+                initialView: 'dayGridMonth',
                 themeSystem: 'bootstrap',
                 headerToolbar: {
                     left: 'prev,next today',

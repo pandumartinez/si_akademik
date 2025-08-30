@@ -9,6 +9,8 @@
 @endsection
 
 @section('content')
+    <form id="form-search" method="get" action="{{ route('siswa.index') }}"></form>
+
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
@@ -35,6 +37,13 @@
                     &nbsp;
                     Export Excel
                 </a>
+
+                <div class="icheck-primary">
+                    <input form="form-search" id="tampilkan-deleted" type="checkbox" name="show-all"
+                        onChange="this.form.submit()" @checked(request()->boolean('show-all'))>
+
+                    <label for="tampilkan-deleted">Tampilkan deleted</label>
+                </div>
             </div>
 
             <div class="card-body">
@@ -57,12 +66,12 @@
                                 <td>
                                     <a href="{{ asset($siswa->foto) }}" data-toggle="lightbox"
                                         data-title="Foto {{ $siswa->nama_siswa }}" data-gallery="gallery" data-footer='
-                                            <a href="{{ route('siswa.edit.foto', Crypt::encrypt($siswa->id)) }}"
-                                                class="btn btn-link btn-block btn-light">
-                                                <i class="nav-icon fas fa-file-upload"></i>
-                                                &nbsp;
-                                                Ubah Foto
-                                            </a>'>
+                                                            <a href="{{ route('siswa.edit.foto', Crypt::encrypt($siswa->id)) }}"
+                                                                class="btn btn-link btn-block btn-light">
+                                                                <i class="nav-icon fas fa-file-upload"></i>
+                                                                &nbsp;
+                                                                Ubah Foto
+                                                            </a>'>
                                         <img src="{{ asset($siswa->foto) }}" class="img-fluid mb-2" style="height: 150px;">
                                     </a>
                                 </td>

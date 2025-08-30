@@ -8,6 +8,7 @@ use App\Kelas;
 use App\Periode;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class KelasMasterDataController extends Controller
 {
@@ -19,7 +20,9 @@ class KelasMasterDataController extends Controller
 
         $periode = Periode::aktif();
 
-        return view('master-data.kelas.index', compact('kelas', 'gurus', 'periode'));
+        $activities = Activity::where('subject_type', 'App\\Kelas')->get();
+
+        return view('master-data.kelas.index', compact('kelas', 'gurus', 'periode', 'activities'));
     }
 
     public function store(Request $request)

@@ -8,6 +8,7 @@ use App\Mapel;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Spatie\Activitylog\Models\Activity;
 
 class MapelMasterDataController extends Controller
 {
@@ -16,19 +17,21 @@ class MapelMasterDataController extends Controller
         $mapels = Mapel::all();
         $kelompokMapel = KelompokMapel::all();
 
-        return view('master-data.mapel.index', compact('mapels', 'kelompokMapel'));
+        $activities = Activity::where('subject_type', 'App\\Mapel')->get();
+
+        return view('master-data.mapel.index', compact('mapels', 'kelompokMapel', 'activities'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'nama_mapel' => 'required',
-            'kelompok' => 'required|exists:App\KelompokMapel',
+            'kelompok_mapel' => 'required',
         ]);
 
         Mapel::create([
             'nama_mapel' => $request->nama_mapel,
-            'kelompok_mapel' => $request->kelompok,
+            'kelompok_mapel' => $request->kelompok_mapel,
         ]);
 
         return redirect()->back()
@@ -48,7 +51,6 @@ class MapelMasterDataController extends Controller
     {
         $request->validate([
             'nama_mapel' => 'required',
-            'kelompok' => 'required|exists:App\KelompokMapel',
         ]);
 
         $mapel->nama_mapel = $request->nama_mapel;

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Crypt;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\JadwalExport;
 use App\Imports\JadwalImport;
+use Spatie\Activitylog\Models\Activity;
 
 class JadwalMasterDataController extends Controller
 {
@@ -28,7 +29,9 @@ class JadwalMasterDataController extends Controller
         $gurus = Guru::all();
         $mapels = Mapel::all();
 
-        return view('master-data.jadwal.index', compact('kelas', 'kelasList', 'gurus', 'mapels'));
+        $activities = Activity::where('subject_type', 'App\\Jadwal')->get();
+
+        return view('master-data.jadwal.index', compact('kelas', 'kelasList', 'gurus', 'mapels', 'activities'));
     }
 
     public function store(Request $request)

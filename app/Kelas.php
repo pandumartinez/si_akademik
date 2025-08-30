@@ -4,9 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Kelas extends Model
 {
+    use LogsActivity;
+    
     protected $table = 'kelas';
 
     protected $guarded = [];
@@ -46,5 +50,11 @@ class Kelas extends Model
     {
         return $this->belongsToMany('App\Siswa', 'App\KelasSiswa')
             ->withPivot('id');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded();
     }
 }

@@ -11,6 +11,7 @@ use App\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+use Spatie\Activitylog\Models\Activity;
 use Spatie\LaravelPdf\Facades\Pdf;
 
 
@@ -21,12 +22,14 @@ class RapotUasController extends Controller
         $user = $request->user();
         $view = $request->view ?? ($user->role === 'admin' ? 'siswa' : 'kelas');
 
+        $activities = Activity::where('subject_type', 'App\\RapotUas')->get();
+
         $kelasList = $user->role === 'admin'
             ? Kelas::all()
             : $user->guru->kelas;
 
         if (!$request->has('kelas')) {
-            return view('rapot-uas.index', compact('kelasList'));
+            return view('rapot-uas.index', compact('kelasList', 'activities'));
         }
 
         $kelas = Kelas::
@@ -39,7 +42,7 @@ class RapotUasController extends Controller
                 : $kelas->mapelGuru($user->guru)->get();
 
             if (!$request->has('mapel')) {
-                return view('rapot-uas.index', compact('kelasList', 'kelas', 'mapelList'));
+                return view('rapot-uas.index', compact('kelasList', 'kelas', 'mapelList', 'activities'));
             }
 
             [$namaMapel, $kelompokMapel] = explode('_', $request->mapel);
@@ -61,10 +64,10 @@ class RapotUasController extends Controller
                 })->first()
                 : $user->guru;
 
-            return view('rapot-uas.index', compact('kelasList', 'kelas', 'mapelList', 'mapel', 'guru'));
+            return view('rapot-uas.index', compact('kelasList', 'kelas', 'mapelList', 'mapel', 'guru', 'activities'));
         } else if ($view === 'siswa') {
              if (!$request->has('siswa')) {
-                return view('rapot-uas.index', compact('kelasList', 'kelas'));
+                return view('rapot-uas.index', compact('kelasList', 'kelas', 'activities'));
             }
 
             $namaSiswa = $request->siswa;
@@ -77,7 +80,7 @@ class RapotUasController extends Controller
                 }
             ])->get();
 
-            return view('rapot-uas.index', compact('kelasList', 'kelas', 'siswa', 'mapels'));
+            return view('rapot-uas.index', compact('kelasList', 'kelas', 'siswa', 'mapels', 'activities'));
         }
     }
 

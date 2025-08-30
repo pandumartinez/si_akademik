@@ -69,7 +69,7 @@
                                 <td>
                                     <h5 class="card-title">{{ $jadwal->mapel->nama_mapel }}</h5>
                                     <p class="card-text">
-                                        <small class="text-muted">{{ $jadwal->guru->nama_guru }}</small>
+                                        <small class="text-muted">{{ $jadwal->guru->nama_guru ?? 'null' }}</small>
                                     </p>
                                 </td>
                                 <td>
@@ -95,6 +95,42 @@
                                         &nbsp;
                                         Hapus
                                     </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+            </div>
+
+            <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Subject</th>
+                            <th>Action</th>
+                            <th>Actor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($activities as $log)
+                            <tr data-toggle="collapse" data-target="#log-detail-{{ $loop->iteration }}" style="cursor: pointer;">
+                                <td>{{ $log->created_at }}</td>
+                                <td>{{ $log->subject->nama_kelas ?? 'null' }}</td>
+                                <td>{{ $log->description }}</td>
+                                <td>{{ $log->causer->name }}</td>
+                            </tr>
+                            <tr class="collapse" id="log-detail-{{ $loop->iteration }}">
+                                <td colspan="4">
+                                    <div style="max-width: 100%; overflow-x: auto;">
+                                        <pre
+                                            style="white-space: pre; margin: 0;">{{ json_encode($log->changes, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</pre>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach

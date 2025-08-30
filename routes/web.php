@@ -91,6 +91,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('master-data/mapel', 'MasterData\MapelMasterDataController')
         ->except(['create', 'show']);
 
+    Route::resource('master-data/kelompok-mapel', 'MasterData\KelompokMapelMasterDataController');
+
     // Master Data: Guru
     Route::prefix('master-data/guru')->group(function () {
         Route::get('{id}/edit/foto', 'MasterData\GuruMasterDataController@editFoto')
@@ -105,6 +107,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('export', 'MasterData\GuruMasterDataController@export')
             ->name('guru.export');
     });
+
+    Route::resource('master-data/jabatan', 'MasterData\JabatanMasterDataController');
 
     Route::resource('master-data/guru', 'MasterData\GuruMasterDataController')
         ->except(['create']);

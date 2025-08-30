@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Activitylog\Models\Activity;
 
 class UserMasterDataController extends Controller
 {
@@ -18,7 +19,9 @@ class UserMasterDataController extends Controller
             $query->withTrashed();
         })->get();
 
-        return view('master-data.user.index', compact('users', 'gurus'));
+        $activities = Activity::where('subject_type', 'App\\User')->get();
+
+        return view('master-data.user.index', compact('users', 'gurus', 'activities'));
     }
 
     public function store(Request $request)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Periode;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class PeriodeController extends Controller
 {
@@ -12,7 +13,9 @@ class PeriodeController extends Controller
     {
         $periode = Periode::aktif();
 
-        return view('periode.index', compact('periode'));
+        $activities = Activity::where('subject_type', 'App\\Periode')->get();
+
+        return view('periode.index', compact('periode', 'activities'));
     }
 
     public function store(Request $request)

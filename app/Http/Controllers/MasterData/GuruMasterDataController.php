@@ -15,7 +15,8 @@ class GuruMasterDataController extends Controller
 {
     public function index(Request $request)
     {
-        $guruList = Guru::with(['jabatan', 'mapel'])->get();
+        $guruList = $request->boolean('show-all') ? Guru::withTrashed() : Guru::query();
+        $guruList = $guruList->with(['jabatan', 'mapel'])->get();
         $jabatanList = Jabatan::all();
 
         return view('master-data.guru.index', compact('guruList', 'jabatanList'));
@@ -61,7 +62,7 @@ class GuruMasterDataController extends Controller
 
     public function show($id)
     {
-        $guru = Guru::findOrFail(Crypt::decrypt($id));
+        $guru = Guru::withTrashed()->findOrFail(Crypt::decrypt($id));
 
         return view('master-data.guru.show', compact('guru'));
     }

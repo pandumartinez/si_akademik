@@ -4,9 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Mapel extends Model
 {
+    use LogsActivity;
+
     protected $table = 'mapels';
 
     protected $guarded = [];
@@ -56,5 +60,11 @@ class Mapel extends Model
     public function rapotUas()
     {
         return $this->hasMany('App\RapotUas');
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logUnguarded();
     }
 }

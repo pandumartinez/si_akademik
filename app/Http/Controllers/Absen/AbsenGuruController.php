@@ -7,11 +7,14 @@ use App\Guru;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class AbsenGuruController extends Controller
 {
     public function index(Request $request)
     {
+        $activities = Activity::where('subject_type', 'App\\AbsenGuru')->get();
+
         if ($request->user()->role === 'admin') {
             $guruList = Guru::all();
 
@@ -39,7 +42,7 @@ class AbsenGuruController extends Controller
                 $absens = [];
             }
 
-            return view('absen-guru.index-admin', compact('guruList', 'absens'));
+            return view('absen-guru.index-admin', compact('guruList', 'absens', 'activities'));
         } else {
             $absens = $request->user()->guru->absen()
                 ->orderBy('created_at', 'desc')
@@ -66,7 +69,7 @@ class AbsenGuruController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            return view('absen-guru.index-guru', compact('absens', 'absenHariIni'));
+            return view('absen-guru.index-guru', compact('absens', 'absenHariIni', 'activities'));
         }
     }
 

@@ -11,6 +11,7 @@ use App\RapotUas;
 use App\RapotUts;
 use App\Siswa;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class NilaiController extends Controller
 {
@@ -19,12 +20,14 @@ class NilaiController extends Controller
         $user = $request->user();
         $view = $request->view ?? ($user->role === 'admin' ? 'siswa' : 'kelas');
 
+        $activities = Activity::where('subject_type', 'App\\Nilai')->get();
+
         $kelasList = $user->role === 'admin'
             ? Kelas::all()
             : $user->guru->kelas;
 
         if (!$request->has('kelas')) {
-            return view('nilai.index', compact('kelasList'));
+            return view('nilai.index', compact('kelasList', 'activities'));
         }
 
         $kelas = Kelas::firstWhere('nama_kelas', '=', $request->kelas);
@@ -35,7 +38,7 @@ class NilaiController extends Controller
                 : $kelas->mapelGuru($user->guru)->get();
 
             if (!$request->has('mapel')) {
-                return view('nilai.index', compact('kelasList', 'kelas', 'mapelList'));
+                return view('nilai.index', compact('kelasList', 'kelas', 'mapelList', 'activities'));
             }
 
             [$namaMapel, $kelompokMapel] = explode('_', $request->mapel);
@@ -57,10 +60,10 @@ class NilaiController extends Controller
                 })->first()
                 : $user->guru;
 
-            return view('nilai.index', compact('kelasList', 'kelas', 'mapelList', 'mapel', 'guru'));
+            return view('nilai.index', compact('kelasList', 'kelas', 'mapelList', 'mapel', 'guru', 'activities'));
         } else if ($view === 'siswa') {
             if (!$request->has('siswa')) {
-                return view('nilai.index', compact('kelasList', 'kelas'));
+                return view('nilai.index', compact('kelasList', 'kelas', 'activities'));
             }
 
             $namaSiswa = $request->siswa;
@@ -73,7 +76,7 @@ class NilaiController extends Controller
                 }
             ])->get();
 
-            return view('nilai.index', compact('kelasList', 'kelas', 'siswa', 'mapels'));
+            return view('nilai.index', compact('kelasList', 'kelas', 'siswa', 'mapels', 'activities'));
         }
     }
 
