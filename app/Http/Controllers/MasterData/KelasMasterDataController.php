@@ -38,8 +38,8 @@ class KelasMasterDataController extends Controller
         ]);
 
         Guru::find($request->wali_kelas)->jabatan()
-            ->syncWithoutDetaching( // Tambahkan jabatan wali kelas tanpa menghapus jabatan lain
-                [8] // Wali Kelas
+            ->syncWithoutDetaching(
+                [8]
             );
 
         return redirect()->back()
@@ -56,13 +56,13 @@ class KelasMasterDataController extends Controller
 
         if ($request->has('wali_kelas')) {
             Guru::find($kelas->wali_kelas)->jabatan()
-                ->detach(8); // Hapus jabatan wali kelas sebelumnya
+                ->detach(8);
 
             $kelas->wali_kelas = $request->wali_kelas;
 
             Guru::find($request->wali_kelas)->jabatan()
-                ->syncWithoutDetaching( // Tambahkan jabatan wali kelas tanpa menghapus jabatan lain
-                    [8] // Wali Kelas
+                ->syncWithoutDetaching(
+                    [8]
                 );
         }
 

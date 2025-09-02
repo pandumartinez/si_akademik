@@ -51,7 +51,6 @@ class KelompokMapelMasterDataController extends Controller
             'nama_kelompok' => 'required',
         ]);
 
-        // $kelompokMapel->kode = $request->kode_kelompok;
         $kelompokMapel->nama_kelompok = $request->nama_kelompok;
 
         $kelompokMapel->save();
@@ -66,10 +65,10 @@ class KelompokMapelMasterDataController extends Controller
             $KelompokMapel->delete();
         } catch (QueryException $e) {
             return redirect()->back()
-                ->with('error', 'Data mapel tidak dapat dihapus!');
+                ->with('error', 'Data kelompok mapel tidak dapat dihapus!');
         }
 
         return redirect()->back()
-            ->with('success', 'Data mapel berhasil dihapus!');
+            ->with('success', 'Data kelompok mapel berhasil dihapus!');
     }
 }

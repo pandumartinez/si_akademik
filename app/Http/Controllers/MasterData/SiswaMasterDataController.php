@@ -20,12 +20,16 @@ class SiswaMasterDataController extends Controller
             abort(404);
         }
 
-        $kelas = Kelas::with('siswa')
-            ->findOrFail(Crypt::decrypt($request->kelas));
-
+        $kelas = Kelas::findOrFail(Crypt::decrypt($request->kelas));
+        if($request->boolean('show-all')){
+            $siswaList = $kelas->siswa()->withTrashed()->get();
+        }
+        else{
+            $siswaList = $kelas->siswa;
+        }
         $kelasList = Kelas::all();
 
-        return view('master-data.siswa.index', compact('kelas', 'kelasList'));
+        return view('master-data.siswa.index', compact('kelas', 'kelasList', 'siswaList'));
     }
 
     public function store(Request $request)

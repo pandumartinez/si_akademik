@@ -96,8 +96,6 @@ class NilaiController extends Controller
             $request->nilai => $request->nilai_value,
         ]);
 
-        // Simpan nilai pada rapot UTS
-
         if (in_array($request->nilai, ['tugas_1', 'tugas_2', 'ulha_1', 'ulha_2', 'uts'])) {
             RapotUts::updateOrCreate([
                 'kelas_siswa_id' => $request->kelas_siswa_id,
@@ -106,8 +104,6 @@ class NilaiController extends Controller
                 $request->nilai => $request->nilai_value,
             ]);
         }
-
-        // Simpan nilai pengetahuan pada rapot UTS
 
         $nilai->refresh();
 

@@ -9,7 +9,9 @@
 @endsection
 
 @section('content')
-    <form id="form-search" method="get" action="{{ route('siswa.index') }}"></form>
+    <form id="form-search" method="get" action="{{ route('siswa.index') }}">
+        <input type="hidden" name="kelas" value="{{ Crypt::encrypt($kelas->id) }}">
+    </form>
 
     <div class="col-md-12">
         <div class="card">
@@ -58,7 +60,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($kelas->siswa as $siswa)
+                        @foreach ($siswaList as $siswa)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $siswa->nama_siswa }}</td>

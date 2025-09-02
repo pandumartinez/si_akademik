@@ -37,10 +37,10 @@
                 </a>
 
                 <!-- <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#drop-table">
-                    <i class="nav-icon fas fa-minus-circle"></i>
-                    &nbsp;
-                    Drop
-                </button> -->
+                                <i class="nav-icon fas fa-minus-circle"></i>
+                                &nbsp;
+                                Drop
+                            </button> -->
             </div>
 
             <div class="card-body">
@@ -119,9 +119,13 @@
                     </thead>
                     <tbody>
                         @foreach ($activities as $log)
-                            <tr data-toggle="collapse" data-target="#log-detail-{{ $loop->iteration }}" style="cursor: pointer;">
+                            <tr data-toggle="collapse" data-target="#log-detail-{{ $loop->iteration }}"
+                                style="cursor: pointer;">
                                 <td>{{ $log->created_at }}</td>
-                                <td>{{ $log->subject->nama_kelas ?? 'null' }}</td>
+                                <td>{{ $log->subject->kelas->nama_kelas ?? 'null' }} &
+                                    {{ [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat'][$log->subject->hari] ?? 'null' }}
+                                    Jam {{ $log->subject->jam_mulai->format('H:i') ?? 'null' }} -
+                                    {{ $log->subject->jam_selesai->format('H:i') ?? 'null' }} </td>
                                 <td>{{ $log->description }}</td>
                                 <td>{{ $log->causer->name }}</td>
                             </tr>
@@ -270,7 +274,9 @@
                                         class="select2 form-control @error('kelas_id') is-invalid @enderror" required>
                                         <option value="">-- Pilih Kelas --</option>
                                         @foreach ($kelasList as $_kelas)
-                                            <option value="{{ $_kelas->id }}" @if ($_kelas->id === $kelas->id) selected @endif>{{ $_kelas->nama_kelas }}</option>
+                                            <option value="{{ $_kelas->id }}" @if ($_kelas->id === $kelas->id) selected @endif>
+                                                {{ $_kelas->nama_kelas }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
