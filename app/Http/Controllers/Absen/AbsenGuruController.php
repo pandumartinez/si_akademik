@@ -130,7 +130,7 @@ class AbsenGuruController extends Controller
         // School coordinates (you should store these in config or env)
         $schoolLat = -7.236157842015011;
         $schoolLong = 112.75782219820323;
-        $allowedRadius = 12.1; // Radius in kilometers
+        $allowedRadius = 0.1; // Radius in kilometers
 
         $distance = $this->calculateDistance(
             $request->latitude,

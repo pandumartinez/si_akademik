@@ -25,8 +25,7 @@
                 <input id="password" type="password" name="password"
                     class="form-control"
                     placeholder="Password"
-                    autocomplete="current-password"
-                    disabled>
+                    autocomplete="current-password">
 
                 <div class="input-group-append">
                     <div class="input-group-text">
@@ -38,8 +37,7 @@
             <div class="row">
                 <div class="col-8">
                     <div class="icheck-primary">
-                        <input id="remember" type="checkbox" name="remember"
-                            disabled>
+                        <input id="remember" type="checkbox" name="remember">
 
                         <label for="remember">Remember Me</label>
                     </div>
@@ -47,8 +45,7 @@
 
                 <div class="col-4">
                     <button id="btn-login" type="submit"
-                        class="btn btn-primary btn-block"
-                        disabled>
+                        class="btn btn-primary btn-block">
                         Login
                         &nbsp;
                         <i class="nav-icon fas fa-sign-in-alt"></i>
@@ -71,97 +68,97 @@
 
 @section('script')
     <script>
-        function debounce(func, wait, immediate) {
-            var timeout;
-            return function () {
-                var context = this, args = arguments;
-                var later = function () {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                var callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(context, args);
-            };
-        };
+        // function debounce(func, wait, immediate) {
+        //     var timeout;
+        //     return function () {
+        //         var context = this, args = arguments;
+        //         var later = function () {
+        //             timeout = null;
+        //             if (!immediate) func.apply(context, args);
+        //         };
+        //         var callNow = immediate && !timeout;
+        //         clearTimeout(timeout);
+        //         timeout = setTimeout(later, wait);
+        //         if (callNow) func.apply(context, args);
+        //     };
+        // };
 
-        $('#email').keyup(debounce(function () {
-            var email = $('#email').val();
+        // $('#email').keyup(debounce(function () {
+        //     var email = $('#email').val();
 
-            if (email.length < 5) {
-                $('#email').removeClass('is-valid is-invalid');
-                $('#password').val('');
-                $('#password').attr('disabled', true);
-                $('#remember').attr('disabled', true);
-                $('#btn-login').attr('disabled', true);
-                return;
-            }
+        //     if (email.length < 5) {
+        //         $('#email').removeClass('is-valid is-invalid');
+        //         $('#password').val('');
+        //         $('#password').attr('disabled', true);
+        //         $('#remember').attr('disabled', true);
+        //         $('#btn-login').attr('disabled', true);
+        //         return;
+        //     }
 
-            $.ajax({
-                type: 'post',
-                url: '{{ route('auth.cek.email') }}',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                dataType: 'json',
-                data: {
-                    email: email,
-                },
-                success: function (data) {
-                    if (data.success) {
-                        $('#email').addClass('is-valid');
-                        $('#email').removeClass('is-invalid');
-                        $('#password').val('');
-                        $('#password').removeAttr('disabled');
-                    } else {
-                        $('#email').addClass('is-invalid');
-                        $('#email').removeClass('is-valid');
-                        $('#password').val('');
-                        $('#password').attr('disabled', true);
-                        $('#remember').attr('disabled', true);
-                        $('#btn-login').attr('disabled', true);
-                    }
-                },
-            });
-        }, 250));
+        //     $.ajax({
+        //         type: 'post',
+        //         url: '{{ route('auth.cek.email') }}',
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         dataType: 'json',
+        //         data: {
+        //             email: email,
+        //         },
+        //         success: function (data) {
+        //             if (data.success) {
+        //                 $('#email').addClass('is-valid');
+        //                 $('#email').removeClass('is-invalid');
+        //                 $('#password').val('');
+        //                 $('#password').removeAttr('disabled');
+        //             } else {
+        //                 $('#email').addClass('is-invalid');
+        //                 $('#email').removeClass('is-valid');
+        //                 $('#password').val('');
+        //                 $('#password').attr('disabled', true);
+        //                 $('#remember').attr('disabled', true);
+        //                 $('#btn-login').attr('disabled', true);
+        //             }
+        //         },
+        //     });
+        // }, 250));
 
-        $('#password').keyup(debounce(function () {
-            var email = $('#email').val();
-            var password = $('#password').val();
+        // $('#password').keyup(debounce(function () {
+        //     var email = $('#email').val();
+        //     var password = $('#password').val();
 
-            if (password.length === 0) {
-                $('#password').removeClass('is-valid is-invalid');
-                $('#remember').attr('disabled', true);
-                $('#btn-login').attr('disabled', true);
-                return;
-            }
+        //     if (password.length === 0) {
+        //         $('#password').removeClass('is-valid is-invalid');
+        //         $('#remember').attr('disabled', true);
+        //         $('#btn-login').attr('disabled', true);
+        //         return;
+        //     }
 
-            $.ajax({
-                type: 'post',
-                url: '{{ route('auth.cek.password') }}',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                dataType: 'json',
-                data: {
-                    email: email,
-                    password: password,
-                },
-                success: function (data) {
-                    if (data.success) {
-                        $('#password').addClass('is-valid');
-                        $('#password').removeClass('is-invalid');
-                        $('#remember').removeAttr('disabled');
-                        $('#btn-login').removeAttr('disabled');
-                    } else {
-                        $('#password').addClass('is-invalid');
-                        $('#password').removeClass('is-valid');
-                        $('#remember').attr('disabled', true);
-                        $('#btn-login').attr('disabled', true);
-                    }
-                },
-            });
-        }, 250));
+        //     $.ajax({
+        //         type: 'post',
+        //         url: '{{ route('auth.cek.password') }}',
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         dataType: 'json',
+        //         data: {
+        //             email: email,
+        //             password: password,
+        //         },
+        //         success: function (data) {
+        //             if (data.success) {
+        //                 $('#password').addClass('is-valid');
+        //                 $('#password').removeClass('is-invalid');
+        //                 $('#remember').removeAttr('disabled');
+        //                 $('#btn-login').removeAttr('disabled');
+        //             } else {
+        //                 $('#password').addClass('is-invalid');
+        //                 $('#password').removeClass('is-valid');
+        //                 $('#remember').attr('disabled', true);
+        //                 $('#btn-login').attr('disabled', true);
+        //             }
+        //         },
+        //     });
+        // }, 250));
     </script>
 @endsection
